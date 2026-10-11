@@ -18,6 +18,15 @@
  function layer(cls,depth){const n=document.createElement('span');n.className=cls;n.setAttribute('aria-hidden','true');if(depth)n.style.setProperty('--depth',String(depth));Array.from(word).forEach((ch,i)=>{const letter=document.createElement('span');letter.className='trippin-letter';letter.style.setProperty('--i',String(i));letter.textContent=ch;n.append(letter)});stage.append(n)}
  for(let d=coarse.matches?4:8;d>0;d--)layer('trippin-depth',d);
  layer('trippin-front',0);title.replaceChildren(stage);
+ // Three original iris ornaments inhabit the R/P counters, keeping the word intact.
+ const eyeMotifs=[
+   '<circle cx="50" cy="50" r="28"/><circle cx="50" cy="50" r="21"/><circle cx="50" cy="50" r="14"/><circle class="eye-core" cx="50" cy="50" r="5"/>',
+   '<circle cx="50" cy="50" r="27"/><g class="iris-rotate"><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z"/><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z" transform="rotate(120 50 50)"/><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z" transform="rotate(240 50 50)"/></g><circle class="eye-core" cx="50" cy="50" r="7"/>',
+   '<circle cx="50" cy="50" r="28"/><g class="iris-rotate"><path d="M50 22 57 43 78 50 57 57 50 78 43 57 22 50 43 43Z"/><path d="m50 30 5 15 15 5-15 5-5 15-5-15-15-5 15-5Z" transform="rotate(45 50 50)"/></g><circle class="eye-core" cx="50" cy="50" r="5"/>'
+ ];
+ const face=Array.from(stage.querySelectorAll?.('.trippin-front .trippin-letter')||[]);
+ [1,3,4].forEach((index,i)=>{const letter=face[index];if(!letter)return;const eye=document.createElement('span');eye.className='letter-eye letter-eye-'+i;eye.setAttribute('aria-hidden','true');eye.innerHTML='<svg viewBox="0 0 100 100" focusable="false" aria-hidden="true"><path class="eye-socket" d="M3 50Q50 5 97 50Q50 95 3 50Z"/>'+eyeMotifs[i]+'<path class="eye-lid" d="M3 50Q50 5 97 50"/></svg>';letter.append(eye)});
+
  const titleBack=document.createElement('canvas'),titleFront=document.createElement('canvas');
  titleBack.className='title-aura title-aura-back';titleFront.className='title-aura title-aura-front';
  for(const n of [titleBack,titleFront]){n.setAttribute('aria-hidden','true');title.append(n)}

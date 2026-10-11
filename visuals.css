@@ -26,3 +26,19 @@ body{isolation:isolate}#ambientCanvas{position:fixed;inset:0;width:100%;height:1
 .motion-paused .title-aura{display:none}
 @media(max-width:600px){.title-aura-front{opacity:.65}.name-row h1::before{filter:none}}
 @media(prefers-reduced-motion:reduce){.title-aura{display:none!important}}
+
+/* Iris engravings: concentric, comma and crystalline motifs in the letter counters. */
+.trippin-front .trippin-letter{position:relative}
+.letter-eye{position:absolute;left:47%;top:12%;width:44%;height:42%;display:block;pointer-events:none;color:#d0ac70;filter:drop-shadow(0 0 5px #86a59455);animation:iris-glimmer 7s ease-in-out infinite;animation-delay:calc(var(--i)*-.8s)}
+.letter-eye svg{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6}
+.letter-eye-0{color:#b6c7b6}.letter-eye-2{color:#a8c5b4}
+.letter-eye .eye-socket{fill:#081210;fill-opacity:.92;stroke-width:2}
+.letter-eye .eye-core,.letter-eye .eye-mark{fill:currentColor;stroke:none}
+.letter-eye .eye-lid{stroke:#eee4d0;stroke-opacity:.75;stroke-width:2}
+.iris-rotate{transform-origin:50px 50px;animation:iris-orbit 24s linear infinite}
+.letter-eye-2 .iris-rotate{animation-direction:reverse;animation-duration:32s}
+@keyframes iris-orbit{to{transform:rotate(360deg)}}
+@keyframes iris-glimmer{0%,100%{opacity:.72}50%{opacity:1}}
+.motion-paused .letter-eye,.motion-paused .iris-rotate{animation:none}
+@media(max-width:600px){.letter-eye{filter:none}.letter-eye svg{stroke-width:2.2}}
+@media(prefers-reduced-motion:reduce){.letter-eye,.iris-rotate{animation:none!important}}
