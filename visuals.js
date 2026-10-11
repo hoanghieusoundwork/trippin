@@ -29,17 +29,18 @@
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
   if(paused||!dragonArt.complete||!dragonArt.naturalWidth)return;
   const t=time*.001+dragonSweep,sw=dragonArt.naturalWidth,sh=dragonArt.naturalHeight;
-  const dw=Math.min(auraW*.91,dragonWordWidth*1.06),dh=dw*sh/sw;
-  const x=auraW*.06,y=(auraH-dh)*.45,parts=coarse.matches?44:72;
+  const dw=Math.min(auraW*.91,dragonWordWidth*.98),dh=dw*sh/sw;
+  const x=auraW*.055+dragonWordWidth*.10,y=(auraH-dh)*.45-auraH*.015,parts=coarse.matches?44:72;
   const dx=Math.sin(t*.8)*dw*.013,dy=Math.cos(t*.65)*auraH*.025,angle=Math.sin(t*.6)*.022;
-  // Illustration is woven through the letter faces in alternating depth planes.
+  // Most of the dragon sits behind the type; only its outer muzzle passes in front.
   // Every strip, including horns and head, follows the same animated skeleton.
   for(const c of [backCtx,frontCtx]){
    c.save();c.translate(x+dw*.5+dx,y+dh*.5+dy);c.rotate(angle);c.translate(-dw*.5,-dh*.5);
-   c.globalAlpha=c===frontCtx?.9:.76;
+   c.globalAlpha=c===frontCtx?.8:.58;
    for(let i=0;i<parts;i++){
-    const u=(i+.5)/parts,front=(u>.13&&u<.21)||(u>.40&&u<.48)||(u>.64&&u<.72)||u>.89;
+    const u=(i+.5)/parts,front=u>.96;
     if(front!==(c===frontCtx))continue;
+    c.globalAlpha=c===frontCtx?.8:(.46+.28*u*u);
     const wave=Math.sin(u*11-t*.9)*auraH*.014+Math.sin(u*6+t*.55)*auraH*.008;
     c.drawImage(dragonArt,i/parts*sw,0,sw/parts+.8,sh,i/parts*dw,wave,dw/parts+.4,dh);
    }
