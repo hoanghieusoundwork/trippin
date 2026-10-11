@@ -1,0 +1,77 @@
+{
+  "projects": [
+    {
+      "id": "sick-flavors-2025",
+      "title": "SICK FLAVORS",
+      "workType": "mixtape",
+      "category": "production",
+      "categories": [
+        "production",
+        "composition"
+      ],
+      "year": "2025",
+      "role": "Music Producer / Composer",
+      "description": "",
+      "credits": "",
+      "youtube": "https://www.youtube.com/playlist?list=PLF6mcUKPRgvl5u8JwB5EMEIt403YIl9pi",
+      "previewStart": "0",
+      "artwork": "",
+      "audio": "",
+      "genre": "Rap/Hip-hop",
+      "trackCount": "15"
+    }
+  ],
+  "notes": [],
+  "gameDemos": [
+    {
+      "title": "GOSU — Sound Redesign",
+      "game": "Thử nghiệm thiết kế lại âm thanh gameplay",
+      "role": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
+      "description": "Demo thực hành, chưa phải bản mix cuối. Nhạc nền được thử nghiệm bằng Suno và Udio.",
+      "credits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo: AI (Suno, Udio), không phải nhạc tôi tự sản xuất.",
+      "link": "https://drive.google.com/drive/folders/1iLduOGDDWuezFXaPa_Aza2dfhVE_tjVw?usp=drive_link"
+    }
+  ],
+  "profile": {
+    "heroImage": "",
+    "heroAlt": "",
+    "heroCaption": "",
+    "portrait": ""
+  },
+  "contact": {
+    "email": "trippin.sb@gmail.com",
+    "instagram": ""
+  },
+  "copy": {
+    "heroRole": "Music Producer since 2019",
+    "heroSkills": "Production · Recording\nSound Design · Mixing & Mastering",
+    "heroRoots": "Sở trường: hip-hop.\nChất liệu: vocal, choir và những kết hợp mới.",
+    "heroIntro": "Nhạc, chất liệu âm thanh\nvà những ý tưởng đang thành hình.",
+    "aboutP1": "Xin chào,\nTôi là Trần Ngọc Hoàng Hiếu, được biết đến với nghệ danh TRIPPIN. Tôi bắt đầu hành trình làm nhạc từ cuối năm 2019, từ sáng tác, sản xuất âm nhạc cho đến mix & master. Hip-hop là dòng nhạc nền tảng, còn màu sắc tôi hướng đến là sự pha trộn giữa \"mơ màng\", \"gợi cảm\" và một chút \"bí ẩn\".",
+    "aboutP2": "Tôi đặc biệt yêu thích những âm thanh mang dấu vết của con người — một câu hát, một lớp bè choir hay chút cảm xúc còn lại trong vocal. Tôi thích việc cắt, ghép những chất liệu ấy thành giai điệu mới, vừa giữ nét biểu cảm của giọng hát, vừa cho nó một hình hài khác. Vì vậy, vocal chop thường xuất hiện trong những bài nhạc tôi làm.",
+    "aboutP3": "Đôi khi, ý tưởng bắt đầu từ việc đặt những chất liệu tưởng chừng chẳng liên quan cạnh nhau. Tôi thích khoảnh khắc tìm ra điểm chung giữa chúng, khiến chúng ăn khớp và mở ra một hướng đi mới cho bản nhạc.",
+    "productionBody": "Làm beat và phát triển bản phối, với hip-hop là sở trường. Tìm chất liệu, nhịp điệu và không gian phù hợp với ý tưởng của bài.",
+    "songwritingBody": "Sáng tác là một phần trong hành trình làm nhạc của tôi từ năm 2020, bên cạnh production và hoàn thiện âm thanh.",
+    "mixBody": "Xử lý và hoàn thiện âm thanh, hướng đến sự rõ ràng, cân bằng và cảm xúc liền mạch của bản nhạc.",
+    "gameIntro": "Sound design cho game là hướng đi mới tôi đang khám phá. Qua các demo thực hành, tôi muốn học thêm và tìm cơ hội phát triển trong lĩnh vực này.",
+    "contactIntro": "Để trao đổi về một bài nhạc, dự án hoặc cơ hội cộng tác, bạn có thể liên hệ với tôi qua:",
+    "workHeadingLead": "Selected",
+    "workHeadingTail": "works",
+    "aboutHeadingLead": "About",
+    "aboutHeadingTail": "me",
+    "practiceHeadingLead": "From idea",
+    "practiceHeadingTail": "to sound",
+    "gameHeadingLead": "Sound",
+    "gameHeadingTail": "designer",
+    "contactHeadingLead": "Let’s",
+    "contactHeadingTail": "connect",
+    "backgroundP1": "Tôi hoạt động cùng tổ đội sản xuất âm nhạc Sickboiz và từng cộng tác trong một số dự án của các artist.",
+    "backgroundP2": "Giai đoạn 2024–2025, tôi tham gia đội ngũ sound design cho phim ngắn thiếu nhi trên YouTube, khám phá cách âm thanh tạo không gian và dẫn dắt câu chuyện.",
+    "backgroundP3": "Tôi linh hoạt sử dụng AI để hỗ trợ workflow khi cần, đồng thời muốn đi sâu hơn vào sound design để kể những câu chuyện giàu hình ảnh và cảm xúc."
+  },
+  "links": {
+    "film": "https://drive.google.com/drive/folders/1BlEB8eQQq0SvtVntEYGFrJdyqHHUBS0G?usp=sharing",
+    "otherGames": "https://youtube.com/playlist?list=PLwRTSovO5tXIPXq2YJM7LcyJdnFBDPnEl&si=Al2SeXvKgJj1aet-"
+  },
+  "aboutVideos": []
+}
