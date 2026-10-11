@@ -7,15 +7,15 @@ body{isolation:isolate}#ambientCanvas{position:fixed;inset:0;width:100%;height:1
 .motion-toggle{font:400 12px/1.6 var(--sans);color:var(--muted);border:1px solid #59665d;background:transparent;padding:8px 12px;border-radius:20px}.motion-toggle:hover{color:var(--ink);border-color:var(--accent)}
 .motion-paused .trippin-letter,.motion-paused .visual-study::after{animation:none}.motion-paused .reveal-pending{opacity:1;translate:none}.motion-paused .section,.motion-paused .project-card,.motion-paused .about-video,.motion-paused .game-demo{transition:none}
 @media(max-width:600px){.name-row{padding:8px 0 14px;perspective:800px}.trippin-depth{transform:translate3d(calc(var(--depth)*.5px),calc(var(--depth)*.7px),calc(var(--depth)*-1.2px))}.motion-toggle{font-size:11px}#ambientCanvas{opacity:.85}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.trippin-letter,.hero-image.visual-study::after{animation:none!important}.reveal-pending{opacity:1;translate:none}.section,.project-card,.about-video,.game-demo,.heading-icon,nav a::after{transition:none}}
+
 
 /* Spatial chrome, stronger chapter entrances and visible click ripples. */
 #interactionCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:20}.section,.project-card,.about-video,.game-demo{transition:opacity 1s ease,translate 1s cubic-bezier(.22,1,.36,1),filter .9s ease,scale 1s cubic-bezier(.22,1,.36,1)}.reveal-pending{opacity:0;translate:0 54px;filter:blur(4px)}.project-card.reveal-pending,.about-video.reveal-pending,.game-demo.reveal-pending{scale:.965}.project-card:hover{border-color:#637e71}.project-card>img,.about-video video,.portrait>img{transition:transform .8s cubic-bezier(.22,1,.36,1),filter .6s}.project-card:hover>img{transform:translateY(-4px);filter:contrast(1.06)}h2{cursor:default}h2:hover .heading-icon{transform:rotate(-15deg) scale(1.12)}summary,button,a{touch-action:manipulation}.visual-study{box-shadow:inset 0 0 50px #7eac9830}.background-note[open]{border-color:#859c8d;background:#2639364a}.background-note[open]>p{animation:detail-arrive .65s cubic-bezier(.22,1,.36,1) both}@keyframes detail-arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .motion-paused .reveal-pending{filter:none;scale:1}.motion-paused .background-note[open]>p{animation:none}.motion-paused #interactionCanvas{display:none}
 @media(max-width:600px){.reveal-pending{translate:0 32px;filter:blur(2px)}.project-card.reveal-pending,.about-video.reveal-pending{scale:.98}}
-@media(prefers-reduced-motion:reduce){.reveal-pending{filter:none;scale:1}.background-note[open]>p{animation:none}.section,.project-card,.about-video,.game-demo,.project-card>img,.portrait>img{transition:none!important}#interactionCanvas{display:none}}
 
-.scroll-art{transform:perspective(1200px) translateY(var(--art-y,0px)) rotateX(var(--art-angle,0deg));transform-origin:center}.motion-paused .scroll-art{transform:none!important}@media(prefers-reduced-motion:reduce){.scroll-art{transform:none!important}}
+
+.scroll-art{transform:perspective(1200px) translateY(var(--art-y,0px)) rotateX(var(--art-angle,0deg));transform-origin:center}.motion-paused .scroll-art{transform:none!important}
 
 .about-copy{background:linear-gradient(115deg,#1f2426ed,#1f2426c9);padding:22px 24px;border-radius:2px}.game-intro>p{background:#293234b8;padding:14px 16px}.about-copy>.label{margin-bottom:20px}@media(max-width:600px){.about-copy{padding:18px 16px}.game-intro>p{padding:12px 14px}}
 
