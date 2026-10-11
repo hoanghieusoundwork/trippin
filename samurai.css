@@ -33,3 +33,6 @@ dialog{background:#10221a;color:var(--ink);border-color:#84794c}dialog p{color:v
 .motion-paused .samurai-fragment{filter:none!important;mask-image:none;-webkit-mask-image:none}
 .motion-paused .samurai-form{visibility:visible}
 @media(prefers-reduced-motion:reduce){.samurai-fragment{filter:none!important}.samurai-halo{animation:none}}
+
+/* Let the second scene show through the dark panels while keeping text contrast. */
+.work{background:#0f1e18b3}.game-audio{background:#081710c4}.contact{background:#112019c9}
