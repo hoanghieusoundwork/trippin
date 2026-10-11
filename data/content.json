@@ -76,16 +76,16 @@
   },
   "aboutVideos": [
     {
-      "title": "silver lies",
+      "title": "",
       "description": "",
       "video": "assets/about-1.mp4",
       "poster": "assets/about-1.jpg"
     },
     {
-      "title": "think I found it",
+      "title": "",
       "description": "",
-      "video": "assets/about-2.mp4",
-      "poster": "assets/about-2.jpg"
+      "video": "assets/about-2-square.mp4",
+      "poster": "assets/about-2-square.jpg"
     }
   ]
 }
