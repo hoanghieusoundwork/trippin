@@ -20,3 +20,9 @@ body{isolation:isolate}#ambientCanvas{position:fixed;inset:0;width:100%;height:1
 .about-copy{background:linear-gradient(115deg,#1f2426ed,#1f2426c9);padding:22px 24px;border-radius:2px}.game-intro>p{background:#293234b8;padding:14px 16px}.about-copy>.label{margin-bottom:20px}@media(max-width:600px){.about-copy{padding:18px 16px}.game-intro>p{padding:12px 14px}}
 
 @media(max-width:360px){.about-copy h2{font-size:34px}}
+
+/* Ribbon sculpture wraps the heading in separate front/back planes. */
+.name-row h1{isolation:isolate;overflow:visible}.name-row h1 .trippin-stage{position:relative;z-index:1}.title-aura{position:absolute;left:-6%;top:-45%;width:112%;height:190%;pointer-events:none;user-select:none}.title-aura-back{z-index:0;opacity:.8}.title-aura-front{z-index:2;opacity:.75}.name-row h1::before{content:'';position:absolute;inset:-30% -5%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#d0ac7010,transparent 65%),radial-gradient(ellipse at 70% 60%,#86a59410,transparent 62%);filter:blur(12px)}
+.motion-paused .title-aura{display:none}
+@media(max-width:600px){.title-aura-front{opacity:.65}.name-row h1::before{filter:none}}
+@media(prefers-reduced-motion:reduce){.title-aura{display:none!important}}
