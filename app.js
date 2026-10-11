@@ -19,7 +19,7 @@ function renderProjects(){
 renderProjects();
 $('#notes').hidden=!data.notes.length;data.notes.forEach(n=>{const a=el('article','note-entry');const body=el('div');body.append(el('h3','',n.title),el('p','',n.body));a.append(el('span','label',n.date),body);$('#notesList').append(a)});
 const profile=data.profile||{};if(safeUrl(profile.heroImage)){$('#heroImage').src=safeUrl(profile.heroImage);$('#heroImage').alt=profile.heroAlt||'Trippin — hình ảnh tác phẩm';$('#heroImageCaption').textContent=profile.heroCaption||'Trippin'}if(safeUrl(profile.portrait)){$('#portraitImage').src=safeUrl(profile.portrait);$('#portraitImage').hidden=false;$('#portraitPlaceholder').hidden=true}
-const contact=data.contact;if(contact.email){const a=el('a','',contact.email);a.href='mailto:'+encodeURIComponent(contact.email);$('#contactLinks').append(a)}if(safeUrl(contact.instagram)){const a=el('a','','Instagram ↗');a.href=safeUrl(contact.instagram);a.target='_blank';a.rel='noopener noreferrer';$('#contactLinks').append(a)}$('#contactPending').hidden=Boolean(contact.email||safeUrl(contact.instagram));
+const contact=data.contact||{};if(contact.email){const a=el('a','',contact.email);a.href='mailto:'+encodeURIComponent(contact.email);$('#contactLinks').append(a)}for(const [key,label] of [['facebook','Facebook'],['instagram','Instagram']]){const url=safeUrl(contact[key]);if(url){const a=el('a','',label+' ↗');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.setAttribute('aria-label',label+' — mở trong tab mới');$('#contactLinks').append(a)}}$('#contactPending').hidden=Boolean(contact.email||safeUrl(contact.facebook)||safeUrl(contact.instagram));
 
 function videoMedia(card,d){
  const url=safeUrl(d.video);if(url){const v=el('video');v.controls=true;v.preload='none';v.playsInline=true;v.src=url;const poster=safeUrl(d.poster);if(poster)v.poster=poster;v.setAttribute('aria-label',d.title);card.append(v);return}
@@ -31,7 +31,6 @@ demos.forEach(d=>{const card=el('article','game-demo');videoMedia(card,d);card.a
 
 document.querySelectorAll('[data-link]').forEach(a=>{const u=safeUrl(data.links?.[a.dataset.link]);if(u)a.href=u;else a.hidden=true});
 if(location.hostname.endsWith('.github.io')&&!new URLSearchParams(location.search).has('preview')){document.querySelectorAll('.preview-note,.admin-entry').forEach(n=>{n.hidden=true})}
-const dialog=$('#briefDialog');$('#openBrief').addEventListener('click',()=>dialog.showModal());dialog.querySelector('.dialog-close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});$('#copyBrief').addEventListener('click',async()=>{const field=$('#briefText');try{await navigator.clipboard.writeText(field.value);$('#copyStatus').textContent='Đã sao chép. Brief chưa được gửi.'}catch{field.focus();field.select();$('#copyStatus').textContent='Chọn Sao chép trên thiết bị để lưu brief.'}});
 
 
 // Keep old local drafts aligned with the updated branding and heading marks.
