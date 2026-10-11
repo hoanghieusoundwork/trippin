@@ -18,26 +18,47 @@
  function layer(cls,depth){const n=document.createElement('span');n.className=cls;n.setAttribute('aria-hidden','true');if(depth)n.style.setProperty('--depth',String(depth));Array.from(word).forEach((ch,i)=>{const letter=document.createElement('span');letter.className='trippin-letter';letter.style.setProperty('--i',String(i));letter.textContent=ch;n.append(letter)});stage.append(n)}
  for(let d=coarse.matches?4:8;d>0;d--)layer('trippin-depth',d);
  layer('trippin-front',0);title.replaceChildren(stage);
- // Three original iris ornaments inhabit the R/P counters, keeping the word intact.
- const eyeMotifs=[
-   '<circle cx="50" cy="50" r="28"/><circle cx="50" cy="50" r="21"/><circle cx="50" cy="50" r="14"/><circle class="eye-core" cx="50" cy="50" r="5"/>',
-   '<circle cx="50" cy="50" r="27"/><g class="iris-rotate"><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z"/><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z" transform="rotate(120 50 50)"/><path class="eye-mark" d="M50 23c12 1 13 13 5 17 2-8-2-10-5-17Z" transform="rotate(240 50 50)"/></g><circle class="eye-core" cx="50" cy="50" r="7"/>',
-   '<circle cx="50" cy="50" r="28"/><g class="iris-rotate"><path d="M50 22 57 43 78 50 57 57 50 78 43 57 22 50 43 43Z"/><path d="m50 30 5 15 15 5-15 5-5 15-5-15-15-5 15-5Z" transform="rotate(45 50 50)"/></g><circle class="eye-core" cx="50" cy="50" r="5"/>'
- ];
- const face=Array.from(stage.querySelectorAll?.('.trippin-front .trippin-letter')||[]);
- [1,3,4].forEach((index,i)=>{const letter=face[index];if(!letter)return;const eye=document.createElement('span');eye.className='letter-eye letter-eye-'+i;eye.setAttribute('aria-hidden','true');eye.innerHTML='<svg viewBox="0 0 100 100" focusable="false" aria-hidden="true"><path class="eye-socket" d="M3 50Q50 5 97 50Q50 95 3 50Z"/>'+eyeMotifs[i]+'<path class="eye-lid" d="M3 50Q50 5 97 50"/></svg>';letter.append(eye)});
-
  const titleBack=document.createElement('canvas'),titleFront=document.createElement('canvas');
  titleBack.className='title-aura title-aura-back';titleFront.className='title-aura title-aura-front';
  for(const n of [titleBack,titleFront]){n.setAttribute('aria-hidden','true');title.append(n)}
  const backCtx=titleBack.getContext('2d'),frontCtx=titleFront.getContext('2d');let auraW=0,auraH=0;
  function sizeAura(){const ratio=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);auraW=(title.clientWidth||window.innerWidth*.85)*1.12;auraH=(title.clientHeight||window.innerHeight*.2)*1.9;for(const [n,c] of [[titleBack,backCtx],[titleFront,frontCtx]]){n.width=Math.round(auraW*ratio);n.height=Math.round(auraH*ratio);c?.setTransform(ratio,0,0,ratio,0,0)}}
- function drawAura(time){if(!backCtx||!frontCtx||!auraW)return;for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);if(paused)return;
-   const segments=coarse.matches?64:100,rx=auraW*.45,ry=auraH*.32,cx=auraW*.5,cy=auraH*.5,clock=time*.001;
-   function point(a,j){const twist=clock*.22+j*1.7+Math.min(scroll/h,1)*.7;const depth=Math.sin(a+twist);return {x:cx+Math.cos(a)*rx*(1+j*.018)+Math.sin(a*3+clock*.45+j)*auraW*.012,y:cy+Math.sin(a)*ry*(.8+j*.1)+Math.cos(a*2+twist)*auraH*.08+Math.cos(a)*auraH*.1,z:depth}}
-   for(let j=0;j<3;j++){for(let k=0;k<segments;k++){const a=k/segments*Math.PI*2,p=point(a,j),q=point(a+Math.PI*2/segments,j),c=p.z>0?frontCtx:backCtx,dx=q.x-p.x,dy=q.y-p.y,len=Math.max(1,Math.hypot(dx,dy)),pulse=(Math.cos(a-clock*(.65+j*.08)+j)+1)/2,width=(coarse.matches?1:1.5)+pulse*(j===1?3:1.8);const nx=-dy/len*width,ny=dx/len*width;c.fillStyle=j===1?`rgba(134,165,148,${.10+pulse*.20})`:`rgba(208,172,112,${.12+pulse*.38})`;c.beginPath();c.moveTo(p.x+nx,p.y+ny);c.lineTo(q.x+nx,q.y+ny);c.lineTo(q.x-nx,q.y-ny);c.lineTo(p.x-nx,p.y-ny);c.closePath();c.fill()}
-     const head=clock*(.65+j*.08)-j,p=point(head,j),c=p.z>0?frontCtx:backCtx;c.fillStyle=j===1?'rgba(185,199,186,.85)':'rgba(238,228,208,.9)';c.shadowColor='rgba(208,172,112,.6)';c.shadowBlur=coarse.matches?4:9;c.beginPath();c.arc(p.x,p.y,coarse.matches?1.6:2.3,0,Math.PI*2);c.fill();c.shadowBlur=0;
-   }
+ function drawAura(time){
+  if(!backCtx||!frontCtx||!auraW)return;
+  for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
+  if(paused)return;
+  const clock=time*.001,head=clock*.28+.3,segments=coarse.matches?56:84;
+  const cx=auraW*.5,cy=auraH*.5,rx=auraW*.44,ry=auraH*.28;
+  // A tapered, breathing ink-serpent: body alternates between planes around the word.
+  function point(a){return {x:cx+Math.cos(a)*rx+Math.sin(a*3-clock*.4)*auraW*.018,
+   y:cy+Math.sin(a)*ry+Math.sin(a*2+clock*.35)*auraH*.07+Math.cos(a)*auraH*.09,
+   z:Math.sin(a+.65+Math.min(scroll/Math.max(h,1),1)*.6)}}
+  for(let k=0;k<segments;k++){
+   const u=k/segments,a=head-(1-u)*Math.PI*1.86,p=point(a),q=point(a+Math.PI*1.86/segments);
+   const c=p.z>0?frontCtx:backCtx,body=Math.pow(Math.sin(u*Math.PI*.86),.8),width=Math.max(.5,body*auraH*.028);
+   c.lineCap='round';
+   // Diffuse atmosphere follows a precise spine; wide strokes stay translucent.
+   c.shadowColor='rgba(134,165,148,.42)';c.shadowBlur=coarse.matches?7:18;
+   c.strokeStyle=`rgba(134,165,148,${u*.13})`;c.lineWidth=width*3;
+   c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();c.shadowBlur=0;
+   c.strokeStyle=`rgba(134,165,148,${.05+u*.22})`;c.lineWidth=width;
+   c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();
+   c.strokeStyle=`rgba(208,172,112,${u*.48})`;c.lineWidth=Math.max(.5,width*.12);
+   c.beginPath();c.moveTo(p.x,p.y-width*.2);c.lineTo(q.x,q.y-width*.2);c.stroke();
+  }
+  const p=point(head),q=point(head+.012),c=p.z>0?frontCtx:backCtx,scale=Math.max(3,auraH*.031);
+  c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(q.y-p.y,q.x-p.x));
+  c.shadowColor='rgba(134,165,148,.6)';c.shadowBlur=coarse.matches?6:16;
+  c.fillStyle='rgba(134,165,148,.35)';c.strokeStyle='rgba(208,172,112,.72)';c.lineWidth=.9;
+  c.beginPath();c.moveTo(-scale*2,0);c.quadraticCurveTo(-scale,-scale,scale*.4,-scale*.65);
+  c.lineTo(scale*1.8,-scale*.2);c.lineTo(scale*1.15,scale*.25);c.lineTo(scale*.3,scale*.5);
+  c.quadraticCurveTo(-scale,scale,-scale*2,0);c.closePath();c.fill();c.stroke();c.shadowBlur=0;
+  // Brush-like crest and whiskers suggest a dragon without a literal illustration.
+  for(const side of [-1,1]){c.strokeStyle='rgba(208,172,112,.5)';c.beginPath();c.moveTo(0,side*scale*.5);
+   c.quadraticCurveTo(-scale*.9,side*scale*1.6,-scale*2.6,side*scale*1.1);c.stroke();
+   c.strokeStyle='rgba(134,165,148,.4)';c.beginPath();c.moveTo(scale,side*scale*.15);
+   c.quadraticCurveTo(scale*1.5,side*scale*1.8,-scale*1.8,side*scale*2.2);c.stroke()}
+  c.restore();
  }
 
  const progress=document.querySelector('.scroll-progress');
