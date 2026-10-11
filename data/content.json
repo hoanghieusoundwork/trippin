@@ -74,5 +74,18 @@
     "film": "https://drive.google.com/drive/folders/1BlEB8eQQq0SvtVntEYGFrJdyqHHUBS0G?usp=sharing",
     "otherGames": "https://youtube.com/playlist?list=PLwRTSovO5tXIPXq2YJM7LcyJdnFBDPnEl&si=Al2SeXvKgJj1aet-"
   },
-  "aboutVideos": []
+  "aboutVideos": [
+    {
+      "title": "silver lies",
+      "description": "",
+      "video": "assets/about-1.mp4",
+      "poster": "assets/about-1.jpg"
+    },
+    {
+      "title": "think I found it",
+      "description": "",
+      "video": "assets/about-2.mp4",
+      "poster": "assets/about-2.jpg"
+    }
+  ]
 }
