@@ -91,9 +91,9 @@
     {
       "title": "GOSU — Sound Redesign 01",
       "game": "Thử nghiệm thiết kế lại âm thanh gameplay",
-      "role": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
-      "description": "Demo thực hành, chưa phải bản mix cuối. Nhạc nền được thử nghiệm bằng Suno và Udio.",
-      "credits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo: AI (Suno, Udio), không phải nhạc tôi tự sản xuất.",
+      "role": "",
+      "description": "",
+      "credits": "",
       "link": "",
       "video": "assets/gosu-demo-1.mp4",
       "poster": "assets/gosu-demo-1.jpg"
@@ -101,9 +101,9 @@
     {
       "title": "GOSU — Sound Redesign 02",
       "game": "Thử nghiệm thiết kế lại âm thanh gameplay",
-      "role": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
-      "description": "Demo thực hành, chưa phải bản mix cuối. Nhạc nền được thử nghiệm bằng Suno và Udio.",
-      "credits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo: AI (Suno, Udio), không phải nhạc tôi tự sản xuất.",
+      "role": "",
+      "description": "",
+      "credits": "",
       "link": "",
       "video": "assets/gosu-demo-2.mp4",
       "poster": "assets/gosu-demo-2.jpg"
@@ -145,7 +145,12 @@
     "contactHeadingTail": "connect",
     "backgroundP1": "Tôi hoạt động cùng tổ đội sản xuất âm nhạc Sickboiz và từng cộng tác trong một số dự án của các artist.",
     "backgroundP2": "Giai đoạn 2024–2025, tôi tham gia đội ngũ sound design cho phim ngắn thiếu nhi trên YouTube, khám phá cách âm thanh tạo không gian và dẫn dắt câu chuyện.",
-    "backgroundP3": "Tôi linh hoạt sử dụng AI để hỗ trợ workflow khi cần, đồng thời muốn đi sâu hơn vào sound design để kể những câu chuyện giàu hình ảnh và cảm xúc."
+    "backgroundP3": "Tôi linh hoạt sử dụng AI để hỗ trợ workflow khi cần, đồng thời muốn đi sâu hơn vào sound design để kể những câu chuyện giàu hình ảnh và cảm xúc.",
+    "gameDemoRole": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
+    "gameDemoDetail1": "Hai demo này chưa phải là bản mix cuối. Đây là những ví dụ về cách tôi tiếp cận và triển khai sound design cho một dự án game, từ lựa chọn chất liệu đến sắp xếp các lớp âm thanh và đồng bộ chúng với hình ảnh, chuyển động.",
+    "gameDemoDetail2": "Tôi tập trung vào nhịp điệu của từng hành động, không gian của bối cảnh và sự kết nối giữa các chi tiết, để âm thanh góp phần làm rõ diễn biến và xây dựng bầu không khí của game.",
+    "gameDemoDetail3": "Khi bước vào dự án thực tế, tôi sẵn sàng phát triển và hoàn thiện phần âm thanh theo yêu cầu cụ thể, hướng đến tiêu chuẩn chuyên nghiệp cao nhất có thể.",
+    "gameDemoCredits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo được thử nghiệm bằng AI (Suno, Udio); phần tôi thực hiện tập trung vào thiết kế và triển khai các hiệu ứng âm thanh."
   },
   "links": {
     "film": "https://drive.google.com/drive/folders/1BlEB8eQQq0SvtVntEYGFrJdyqHHUBS0G?usp=sharing",

@@ -43,3 +43,5 @@ h3 .heading-icon,summary .heading-icon,.label .heading-icon{width:.72em;height:.
 .about-video video{object-fit:cover;filter:sepia(.16) saturate(.55) hue-rotate(5deg);border-color:#d0ac7029}
 
 .game-demo video{border:1px solid #d0ac7029;border-radius:3px;background:#081210;box-shadow:0 12px 30px #02080655;aspect-ratio:16/9;object-fit:contain}
+
+.game-demo-note{margin-top:28px;max-width:820px}.game-demo-note p{font-size:17px;line-height:1.85;color:#cdd0c6;margin:0 0 18px}.game-demo-note .project-detail{margin-top:18px}.game-demo-note .project-detail p{margin:16px 0}.game-demo-note .demo-credit{font-size:14px;color:var(--muted);padding-top:16px;border-top:1px solid var(--line)}

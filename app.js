@@ -30,6 +30,14 @@ const aboutVideos=(data.aboutVideos||[]).slice(0,2);for(let i=0;i<2;i++){const d
 const demos=data.gameDemos||[];$('#gameEmpty').hidden=demos.length>0;
 demos.forEach(d=>{const card=el('article','game-demo');videoMedia(card,d);card.append(el('h3','',d.title));if(d.role)card.append(el('p','',d.role));const link=safeUrl(d.link);if(link&&!TRIPPIN_YOUTUBE.videoId(link)){const a=el('a','quiet-link','Mở demo ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';card.append(a)}if(d.description||d.credits){const more=el('details','project-detail');more.append(el('summary','','Chi tiết demo'));if(d.description)more.append(el('p','',d.description));if(d.credits)more.append(el('p','',d.credits));card.append(more)}$('#gameDemos').append(card)});
 
+// One shared explanation for the two GOSU studies.
+if(demos.length&&copy.gameDemoRole){
+ const note=el('div','game-demo-note');note.id='gameDemoNote';note.append(el('p','',copy.gameDemoRole));
+ const detail=el('details','project-detail');detail.append(el('summary','','Chi tiết demo'));
+ for(const key of ['gameDemoDetail1','gameDemoDetail2','gameDemoDetail3','gameDemoCredits'])if(copy[key])detail.append(el('p',key==='gameDemoCredits'?'demo-credit':'',copy[key]));
+ note.append(detail);$('#gameDemos').after(note);
+}
+
 // Warm the video buffer shortly before the viewer reaches a media section.
 const aboutMedia=[...document.querySelectorAll('#aboutVideos video, #gameDemos video')];
 if('IntersectionObserver' in window){
