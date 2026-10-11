@@ -22,3 +22,14 @@ dialog{background:#10221a;color:var(--ink);border-color:#84794c}dialog p{color:v
 .motion-paused .samurai-form{will-change:auto}.motion-paused .samurai-fragment,.motion-paused .samurai-sheen{display:none}.motion-paused .samurai-form #samuraiFigure{opacity:.86}
 @media(max-width:760px){.samurai-form{width:94vw;height:88svh;right:-16vw;bottom:5vh}.samurai-form #samuraiFigure{height:100%;max-width:none;right:0;bottom:0}.samurai-sheen{filter:none;opacity:calc(var(--light-opacity,0)*.7)}}
 @media(prefers-reduced-motion:reduce){.samurai-form{will-change:auto}.samurai-fragment,.samurai-sheen{display:none!important}.fragments-ready .samurai-form #samuraiFigure{opacity:.72}}
+
+/* Progressive ink erosion; the fragments never reassemble while scrolling down. */
+.samurai-fragment{mask-image:linear-gradient(125deg,transparent calc(var(--erode,-18%) - 14%),#000 calc(var(--erode,-18%) + 14%));-webkit-mask-image:linear-gradient(125deg,transparent calc(var(--erode,-18%) - 14%),#000 calc(var(--erode,-18%) + 14%))}
+.samurai-fragment:nth-of-type(even){mask-image:linear-gradient(55deg,transparent calc(var(--erode,-18%) - 14%),#000 calc(var(--erode,-18%) + 14%));-webkit-mask-image:linear-gradient(55deg,transparent calc(var(--erode,-18%) - 14%),#000 calc(var(--erode,-18%) + 14%))}
+.samurai-gone .samurai-form{visibility:hidden;will-change:auto}
+.samurai-halo{opacity:calc(1 - var(--samurai-dissolve,0));animation:halo-scale 12s ease-in-out infinite alternate}
+@keyframes halo-scale{from{transform:scale(1)}to{transform:scale(1.06)}}
+.samurai-mist{opacity:calc(.35 + var(--samurai-fog,0)*.65)}
+.motion-paused .samurai-fragment{filter:none!important;mask-image:none;-webkit-mask-image:none}
+.motion-paused .samurai-form{visibility:visible}
+@media(prefers-reduced-motion:reduce){.samurai-fragment{filter:none!important}.samurai-halo{animation:none}}

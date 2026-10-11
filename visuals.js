@@ -65,19 +65,53 @@
  function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
  function pose(t){const rotationX=paused?0:-4+pointer.y*4+Math.sin(t*.55)*1.7;const rotationY=paused?-3:pointer.x*8+Math.sin(t*.4)*4+Math.min(scroll/h,1)*9;const rotationZ=paused?0:Math.sin(t*.25)*.6;stage.style.transform=`rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg) translateY(${paused?0:Math.sin(t*.7)*4}px)`}
  function draw(){ctx.clearRect(0,0,w,h);fx?.clearRect(0,0,w,h);if(heroVisible||paused)drawAura(elapsed);const t=elapsed*.001,phase=scroll/(Math.max(1,document.documentElement.scrollHeight-h));
-  if(samurai){const orbit=phase*Math.PI*2,open=paused?0:Math.min(1,Math.pow(Math.sin(Math.PI*scroll/Math.max(1,h*2)),2)+impulse*.16);samurai.style.setProperty('--samurai-x',(paused?0:pointer.x*8)+'px');samurai.style.setProperty('--samurai-y',(paused?0:Math.sin(t*.4)*2)+'px');samurai.style.setProperty('--samurai-turn',(paused?-3:pointer.x*3)+'deg');samurai.style.setProperty('--samurai-tilt',(paused?0:pointer.y*-2)+'deg');samurai.style.setProperty('--samurai-roll',(paused?0:0)+'deg');samurai.style.setProperty('--samurai-scale',String(paused?1:1-Math.sin(phase*Math.PI)*.06));samurai.style.setProperty('--fragment-open',String(open));samurai.style.setProperty('--depth-pulse',String(paused?0:Math.min(1,scrollEnergy*.65+impulse*.5)));samurai.style.setProperty('--light-position',(paused?-40:Math.sin(orbit*1.5)*65+45+Math.sin(t*.35)*10)+'%');samurai.style.setProperty('--light-opacity',String(paused?0:(1-open)*(.12+scrollEnergy*.12+impulse*.12)));samurai.style.setProperty('--camera-z',(paused?0:Math.sin(phase*Math.PI)*95+impulse*12)+'px');
+  const sceneScroll=scroll/Math.max(1,h),ease=(a,b,v)=>{const u=Math.max(0,Math.min(1,(v-a)/(b-a)));return u*u*u*(10+u*(-15+6*u))};
+  const open=paused?0:ease(.12,1.05,sceneScroll),dissolve=paused?0:ease(1.20,2.45,sceneScroll),sonic=paused?0:ease(1.80,2.85,sceneScroll);
+  if(samurai){const orbit=phase*Math.PI*2;
+    samurai.style.setProperty('--samurai-x',(paused?0:pointer.x*8)+'px');samurai.style.setProperty('--samurai-y',(paused?0:Math.sin(t*.4)*2)+'px');
+    samurai.style.setProperty('--samurai-turn',(paused?-3:pointer.x*3)+'deg');samurai.style.setProperty('--samurai-tilt',(paused?0:pointer.y*-2)+'deg');
+    samurai.style.setProperty('--samurai-scale',String(paused?1:1-open*.045));samurai.style.setProperty('--fragment-open',String(open));
+    samurai.style.setProperty('--samurai-dissolve',String(dissolve));samurai.style.setProperty('--samurai-fog',String(Math.sin(dissolve*Math.PI)));
+    samurai.style.setProperty('--sonic-reveal',String(sonic));samurai.classList.toggle('samurai-gone',dissolve>=.999&&!paused);
+    samurai.style.setProperty('--depth-pulse',String(paused?0:Math.min(1,scrollEnergy*.65+impulse*.5)));
+    samurai.style.setProperty('--light-position',(paused?-40:Math.sin(orbit*1.5)*65+45+Math.sin(t*.35)*10)+'%');
+    samurai.style.setProperty('--light-opacity',String(paused?0:(1-open)*(1-dissolve)*(.12+scrollEnergy*.12+impulse*.12)));
+    samurai.style.setProperty('--camera-z',(paused?0:open*65+impulse*12)+'px');
     pieces.forEach((piece,i)=>{const row=Math.floor(i/2),side=i%2===0?-1:1;
-      // Each clipped region has its own trajectory, rotation, and stretch. Identity at assembly.
+      // Separation reaches a fixed endpoint. Staggered erosion then lifts the ink into mist.
+      const fade=paused?0:ease(1.17+row*.06+(i%2)*.025,2.25+row*.07,sceneScroll);
       const spread=open*(.8+row*.07),reach=coarse.matches?82:145;
-      const x=side*spread*(reach+row*14),y=spread*(row-1.5)*(coarse.matches?36:58),z=spread*(30+row*20);
+      const x=side*spread*(reach+row*14)+side*fade*12,y=spread*(row-1.5)*(coarse.matches?36:58)-fade*(18+row*6),z=spread*(30+row*20);
       const rotation=side*spread*(24+row*12),turn=side*spread*(22+row*12),stretch=1+spread*(i%3-1)*.3;
       piece.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateY(${turn}deg) rotateZ(${rotation}deg) scale(${stretch},${1+spread*.15})`;
-      piece.style.opacity=String(coarse.matches?.72:.86);
-    })}
+      piece.style.opacity=String((coarse.matches?.72:.86)*Math.pow(1-fade,1.25));
+      piece.style.filter=fade>0&&fade<1?`blur(${(fade*fade*(coarse.matches?4:9)).toFixed(2)}px)`:'none';
+      piece.style.setProperty('--erode',(-18+fade*136)+'%');
+    })
+  }
   const cx=w*.76+pointer.x*35,cy=h*.38-Math.sin(phase*6.28)*h*.2;
   const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(w,h)*.7);glow.addColorStop(0,'rgba(86,142,113,.19)');glow.addColorStop(.5,'rgba(162,103,45,.10)');glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
-  // Dim spectral contours follow the image's gesture, rather than drawing a new object.
-  if(!paused){const lines=coarse.matches?3:5;ctx.save();ctx.translate(w*.77,h*.53);ctx.rotate(Math.sin(phase*Math.PI*2)*.22);for(let j=0;j<lines;j++){const drift=Math.sin(t*.35+j*.8+phase*8),span=Math.min(w*.28,350);ctx.strokeStyle=`rgba(208,172,112,${.025+scrollEnergy*.035})`;ctx.lineWidth=j===0?1.1:.55;ctx.beginPath();for(let k=0;k<=36;k++){const u=k/36,x=(u-.5)*span*2,y=Math.sin(u*7+phase*10+j*.65+t*.3)*(18+j*7)+drift*32+(j-2)*24;k?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}ctx.restore()}
+  // A veil of drifting jade vapor bridges the image erosion and the new sonic scene.
+  const fog=Math.sin(dissolve*Math.PI)*(1-sonic*.5);
+  if(fog>.001&&!paused){const count=coarse.matches?7:13;
+   for(let i=0;i<count;i++){const seed=i*2.399,px=w*.77+Math.sin(seed)*w*.20+Math.sin(t*.18+seed)*20,
+    py=h*.50+Math.cos(seed*1.3)*h*.38-dissolve*h*.12,radius=(coarse.matches?65:100)+Math.sin(seed)*25;
+    const mist=ctx.createRadialGradient(px,py,0,px,py,radius);mist.addColorStop(0,`rgba(134,165,148,${fog*.10})`);mist.addColorStop(.5,`rgba(134,165,148,${fog*.035})`);mist.addColorStop(1,'rgba(134,165,148,0)');
+    ctx.fillStyle=mist;ctx.fillRect(px-radius,py-radius,radius*2,radius*2);
+   }
+  }
+  // Open, blade-like sound ribbons replace the figure, breathing behind the content.
+  if(sonic>.001&&!paused){const ribbons=coarse.matches?3:5,steps=coarse.matches?48:72;
+   for(let j=0;j<ribbons;j++){const points=[];
+    for(let k=0;k<=steps;k++){const u=k/steps,x=w*(.24+u*.87),y=h*(.65-u*.26)+Math.sin(u*5.6+t*.14+j*.47)*h*(.18+j*.012)+Math.sin(u*16-t*.22+j)*h*.024+(j-2)*h*.035;
+     points.push({x:x+pointer.x*6,y:y-scrollEnergy*10*Math.sin(u*Math.PI),width:Math.sin(u*Math.PI)**1.5*(coarse.matches?5:10)*(1+j*.14)})}
+    ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y-p.width):ctx.moveTo(p.x,p.y-p.width));
+    for(let i=points.length-1;i>=0;i--)ctx.lineTo(points[i].x,points[i].y+points[i].width);ctx.closePath();
+    ctx.fillStyle=j%2?`rgba(208,172,112,${sonic*.085})`:`rgba(134,165,148,${sonic*.11})`;ctx.fill();
+    for(let edge=0;edge<2;edge++){ctx.beginPath();points.forEach((p,i)=>{const y=p.y+(edge?1:-1)*p.width;i?ctx.lineTo(p.x,y):ctx.moveTo(p.x,y)});
+     ctx.strokeStyle=edge?`rgba(134,165,148,${sonic*.16})`:`rgba(208,172,112,${sonic*(j===2?.48:.26)})`;ctx.lineWidth=j===2?1.1:.65;ctx.stroke()}
+   }
+  }
   const angle=t*.055+phase*3.2,ca=Math.cos(angle),sa=Math.sin(angle);
   for(const s of stars){const x=s.x*w*.8,y=s.y*h*.95;const rx=x*ca+(s.z-450)*sa,z=700+s.z-x*sa*.25,scale=700/z;const sx=w*.5+rx*scale+pointer.x*12,sy=h*.5+(y-scroll*.05)*scale+Math.sin(t*.3+s.phase)*6;if(sx<0||sx>w||sy<0||sy>h)continue;const shimmer=.24+(Math.sin(t*.65+s.phase)+1)*.15;ctx.fillStyle=`rgba(228,175,103,${shimmer})`;ctx.beginPath();ctx.arc(sx,sy,s.r*scale,0,Math.PI*2);ctx.fill();if(scrollEnergy>.08&&!paused){ctx.strokeStyle=`rgba(228,175,103,${scrollEnergy*.16})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx+Math.sin(angle)*scrollEnergy*16,sy+scrollEnergy*22);ctx.stroke()}if(s.r>.98&&Math.sin(t*.65+s.phase)>.97){ctx.strokeStyle='rgba(239,188,114,.25)';ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(sx-3,sy);ctx.lineTo(sx+3,sy);ctx.moveTo(sx,sy-3);ctx.lineTo(sx,sy+3);ctx.stroke()}}
   ripples=ripples.filter(r=>t-r.born<1.1);for(const r of ripples){const age=(t-r.born)/1.1,radius=12+age*(coarse.matches?100:180);clickCtx.strokeStyle=`rgba(224,194,164,${(1-age)*.65})`;clickCtx.lineWidth=1.2;clickCtx.beginPath();clickCtx.arc(r.x,r.y,radius,0,Math.PI*2);clickCtx.stroke();clickCtx.strokeStyle=`rgba(154,205,188,${(1-age)*.38})`;clickCtx.beginPath();clickCtx.arc(r.x,r.y,radius*.7,0,Math.PI*2);clickCtx.stroke()}
