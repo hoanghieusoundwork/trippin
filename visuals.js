@@ -33,14 +33,17 @@
   function point(a){return {x:cx+Math.cos(a)*rx+Math.sin(a*3-clock*.4)*auraW*.018,
    y:cy+Math.sin(a)*ry+Math.sin(a*2+clock*.35)*auraH*.07+Math.cos(a)*auraH*.09,
    z:Math.sin(a+.65+Math.min(scroll/Math.max(h,1),1)*.6)}}
+  for(const c of [backCtx,frontCtx]){
+   c.beginPath();let connected=false;
+   for(let k=0;k<=segments;k++){const a=head-(1-k/segments)*Math.PI*1.86,p=point(a),belongs=(p.z>0)===(c===frontCtx);
+    if(belongs){if(connected)c.lineTo(p.x,p.y);else c.moveTo(p.x,p.y)}connected=belongs}
+   c.lineCap='round';c.lineWidth=auraH*.065;c.strokeStyle='rgba(134,165,148,.11)';
+   c.shadowColor='rgba(134,165,148,.45)';c.shadowBlur=coarse.matches?8:20;c.stroke();c.shadowBlur=0;
+  }
   for(let k=0;k<segments;k++){
    const u=k/segments,a=head-(1-u)*Math.PI*1.86,p=point(a),q=point(a+Math.PI*1.86/segments);
    const c=p.z>0?frontCtx:backCtx,body=Math.pow(Math.sin(u*Math.PI*.86),.8),width=Math.max(.5,body*auraH*.028);
    c.lineCap='round';
-   // Diffuse atmosphere follows a precise spine; wide strokes stay translucent.
-   c.shadowColor='rgba(134,165,148,.42)';c.shadowBlur=coarse.matches?7:18;
-   c.strokeStyle=`rgba(134,165,148,${u*.13})`;c.lineWidth=width*3;
-   c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();c.shadowBlur=0;
    c.strokeStyle=`rgba(134,165,148,${.05+u*.22})`;c.lineWidth=width;
    c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();
    c.strokeStyle=`rgba(208,172,112,${u*.48})`;c.lineWidth=Math.max(.5,width*.12);
