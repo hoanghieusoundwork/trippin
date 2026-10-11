@@ -118,12 +118,16 @@
  }
  function updateProgress(){const range=document.documentElement.scrollHeight-h;if(progress)progress.style.transform=`scaleX(${range>0?Math.min(1,window.scrollY/range):0})`}
  function parallax(){artNodes.forEach(n=>{const rect=n.getBoundingClientRect(),offset=Math.max(-1,Math.min(1,(rect.top+rect.height/2-h/2)/h));n.style.setProperty('--art-y',(paused?0:offset*(coarse.matches?10:24))+'px');n.style.setProperty('--art-angle',(paused?0:offset*(coarse.matches?.6:1.8))+'deg')})}
+ // Keep scroll transforms responsive while giving video decoding more headroom.
+ const playingVideos=new Set();
+ document.addEventListener('play',e=>{if(e.target.tagName==='VIDEO')playingVideos.add(e.target)},true);
+ for(const event of ['pause','ended','error','emptied'])document.addEventListener(event,e=>playingVideos.delete(e.target),true);
  function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):16.67;last=now;elapsed+=delta;
   const travel=window.scrollY-dragonScroll;dragonScroll=window.scrollY;
   if(travel>1)dragonEyeGlow=1;else dragonEyeGlow*=Math.exp(-delta/170);
   if(travel>2){if(dragonQuiet<=0)dragonBurst=1;dragonQuiet=180}else dragonQuiet=Math.max(0,dragonQuiet-delta);
   dragonBurst*=Math.exp(-delta/440);dragonSweep+=delta*.001*(.035+dragonBurst*1.8);
-  impulse*=Math.exp(-delta/550);const follow=1-Math.exp(-delta/70),pointerFollow=1-Math.exp(-delta/150);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*follow;scroll+=(window.scrollY-scroll)*follow;pointer.x+=(aim.x-pointer.x)*pointerFollow;pointer.y+=(aim.y-pointer.y)*pointerFollow;const paint=now-lastPaint>=32;draw(paint);if(paint){lastPaint=now;if(heroVisible)pose(elapsed*.001)}updateProgress();raf=requestAnimationFrame(frame)}
+  impulse*=Math.exp(-delta/550);const follow=1-Math.exp(-delta/70),pointerFollow=1-Math.exp(-delta/150);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*follow;scroll+=(window.scrollY-scroll)*follow;pointer.x+=(aim.x-pointer.x)*pointerFollow;pointer.y+=(aim.y-pointer.y)*pointerFollow;const paint=now-lastPaint>=(playingVideos.size?80:32);draw(paint);if(paint){lastPaint=now;if(heroVisible)pose(elapsed*.001)}updateProgress();raf=requestAnimationFrame(frame)}
  function start(){if(!paused&&!document.hidden&&!raf){last=0;raf=requestAnimationFrame(frame)}}
  function state(){if(paused){impulse=0;scrollEnergy=0;dragonBurst=0;dragonQuiet=0;dragonEyeGlow=0}dragonScroll=window.scrollY;document.documentElement.classList.toggle('motion-paused',paused);document.documentElement.classList.toggle('motion-enabled',!paused);cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
  window.addEventListener('pointermove',e=>{if(coarse.matches||paused)return;aim.x=(e.clientX/w-.5)*2;aim.y=(e.clientY/h-.5)*2},{passive:true});
