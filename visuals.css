@@ -35,3 +35,5 @@ body{isolation:isolate}#ambientCanvas{position:fixed;inset:0;width:100%;height:1
 /* Soft jade/brass edge bloom keeps the metallic face crisp. */
 .name-row .trippin-front .trippin-letter{filter:drop-shadow(0 3px 1px #111c1a) drop-shadow(-2px 0 4px #86a59455) drop-shadow(2px 1px 7px #d0ac7048)}
 @media(max-width:600px){.name-row .trippin-front .trippin-letter{filter:drop-shadow(0 2px 1px #111c1a) drop-shadow(-1px 0 3px #86a59444) drop-shadow(1px 0 4px #d0ac7040)}}
+
+#profile{scroll-margin-top:24px}.hero .name-row{margin-bottom:36px}nav a:active,.contact-link:active{color:var(--accent)}
