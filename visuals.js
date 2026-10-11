@@ -64,7 +64,7 @@
  function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1:1.25);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
  function pose(t){const rotationX=paused?0:-4+pointer.y*4+Math.sin(t*.55)*1.7;const rotationY=paused?-3:pointer.x*8+Math.sin(t*.4)*4+Math.min(scroll/h,1)*9;const rotationZ=paused?0:Math.sin(t*.25)*.6;stage.style.transform=`rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg) translateY(${paused?0:Math.sin(t*.7)*4}px)`}
  function draw(paint=true){if(paint){ctx.clearRect(0,0,w,h);fx?.clearRect(0,0,w,h);if(heroVisible||paused)drawAura(elapsed);}const t=elapsed*.001,phase=scroll/(Math.max(1,document.documentElement.scrollHeight-h));
-  const sceneScroll=scroll/Math.max(1,h),ease=(a,b,v)=>{const u=Math.max(0,Math.min(1,(v-a)/(b-a)));return u*u*u*(10+u*(-15+6*u))};
+  const sceneScroll=scroll/(Math.max(1,h)*1.18),ease=(a,b,v)=>{const u=Math.max(0,Math.min(1,(v-a)/(b-a)));return u*u*u*(10+u*(-15+6*u))};
   const open=paused?0:ease(.12,1.05,sceneScroll),dissolve=paused?0:ease(1.20,2.45,sceneScroll),sonic=paused?0:ease(1.80,2.85,sceneScroll);
   if(samurai){const orbit=phase*Math.PI*2;
     samurai.style.setProperty('--samurai-x',(paused?0:pointer.x*8)+'px');samurai.style.setProperty('--samurai-y',(paused?0:Math.sin(t*.4)*2)+'px');
