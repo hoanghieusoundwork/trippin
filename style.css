@@ -34,3 +34,5 @@ h1,h2,h3,.logo,.background-note summary{font-synthesis:none}h3{letter-spacing:-.
 #aboutVideos{max-width:920px;margin-inline:auto}.about-video .video-empty,.about-video video,.about-video .full-video-poster{aspect-ratio:1;object-fit:contain;background:#151e20}.about-video .full-video-frame{width:100%;max-width:none;margin-left:0;overflow-x:hidden}.about-video .video-viewport{aspect-ratio:1;min-width:200px}.heading-icon{display:inline-block;width:.42em;height:.42em;margin-left:.24em;vertical-align:.04em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;letter-spacing:normal}
 
 h3 .heading-icon,summary .heading-icon,.label .heading-icon{width:.72em;height:.72em;vertical-align:-.03em;margin-left:.4em}
+
+#contactLinks .contact-link{display:inline-flex;align-items:center;gap:12px;padding:8px 0;line-height:1.4;transition:color .2s,border-color .2s}#contactLinks .contact-link:hover{color:var(--accent)}.contact-icon{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.contact-arrow{font-size:.8em;opacity:.7;margin-left:2px}
