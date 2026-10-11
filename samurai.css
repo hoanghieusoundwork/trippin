@@ -36,3 +36,6 @@ dialog{background:#10221a;color:var(--ink);border-color:#84794c}dialog p{color:v
 .work{background:#0f1e18b3}.game-audio{background:#081710c4}.contact{background:#112019c9}
 
 .samurai-fragment{mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
+
+/* Keep soft masks fixed; scrolling changes compositor transforms and opacity only. */
+.samurai-fragment{will-change:transform,opacity;filter:none!important}.samurai-form #samuraiFigure{will-change:opacity}.samurai-sheen{display:none}.samurai-form{transform-style:flat}

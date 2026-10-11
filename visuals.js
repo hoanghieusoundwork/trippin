@@ -22,7 +22,7 @@
  for(const n of [titleBack,titleFront]){n.setAttribute('aria-hidden','true');title.append(n)}
  const backCtx=titleBack.getContext('2d'),frontCtx=titleFront.getContext('2d');let auraW=0,auraH=0,dragonWordWidth=0;
  const dragonArt=document.createElement('img');dragonArt.decoding='async';dragonArt.onload=()=>draw();dragonArt.src='assets/visuals/dragon-weave-v1.webp';
- function sizeAura(){const letters=Array.from(title.querySelectorAll?.('.trippin-front .trippin-letter')||[]),end=letters[letters.length-1];dragonWordWidth=end?(end.offsetLeft+end.offsetWidth):(title.clientWidth||window.innerWidth*.85)*.75;const ratio=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);auraW=(title.clientWidth||window.innerWidth*.85)*1.12;auraH=(title.clientHeight||window.innerHeight*.2)*1.9;for(const [n,c] of [[titleBack,backCtx],[titleFront,frontCtx]]){n.width=Math.round(auraW*ratio);n.height=Math.round(auraH*ratio);c?.setTransform(ratio,0,0,ratio,0,0)}}
+ function sizeAura(){const letters=Array.from(title.querySelectorAll?.('.trippin-front .trippin-letter')||[]),end=letters[letters.length-1];dragonWordWidth=end?(end.offsetLeft+end.offsetWidth):(title.clientWidth||window.innerWidth*.85)*.75;const ratio=Math.min(window.devicePixelRatio||1,coarse.matches?1:1.25);auraW=(title.clientWidth||window.innerWidth*.85)*1.12;auraH=(title.clientHeight||window.innerHeight*.2)*1.9;for(const [n,c] of [[titleBack,backCtx],[titleFront,frontCtx]]){n.width=Math.round(auraW*ratio);n.height=Math.round(auraH*ratio);c?.setTransform(ratio,0,0,ratio,0,0)}}
  function drawAura(time){
   if(!backCtx||!frontCtx||!auraW)return;
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
@@ -60,10 +60,10 @@
  const progress=document.querySelector('.scroll-progress');
  let w=0,h=0,raf=0,last=0,elapsed=0,scroll=window.scrollY||0,pointer={x:0,y:0},aim={x:0,y:0},heroVisible=true;
  let dragonEyeGlow=0,dragonBurst=0,dragonSweep=0,dragonScroll=window.scrollY||0,dragonQuiet=0;
- let stars=[],ripples=[],scrollEnergy=0,impulse=0;const artNodes=new Set();
- function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
+ let stars=[],ripples=[],scrollEnergy=0,impulse=0,lastPaint=-Infinity;const artNodes=new Set();
+ function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1:1.25);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
  function pose(t){const rotationX=paused?0:-4+pointer.y*4+Math.sin(t*.55)*1.7;const rotationY=paused?-3:pointer.x*8+Math.sin(t*.4)*4+Math.min(scroll/h,1)*9;const rotationZ=paused?0:Math.sin(t*.25)*.6;stage.style.transform=`rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg) translateY(${paused?0:Math.sin(t*.7)*4}px)`}
- function draw(){ctx.clearRect(0,0,w,h);fx?.clearRect(0,0,w,h);if(heroVisible||paused)drawAura(elapsed);const t=elapsed*.001,phase=scroll/(Math.max(1,document.documentElement.scrollHeight-h));
+ function draw(paint=true){if(paint){ctx.clearRect(0,0,w,h);fx?.clearRect(0,0,w,h);if(heroVisible||paused)drawAura(elapsed);}const t=elapsed*.001,phase=scroll/(Math.max(1,document.documentElement.scrollHeight-h));
   const sceneScroll=scroll/Math.max(1,h),ease=(a,b,v)=>{const u=Math.max(0,Math.min(1,(v-a)/(b-a)));return u*u*u*(10+u*(-15+6*u))};
   const open=paused?0:ease(.12,1.05,sceneScroll),dissolve=paused?0:ease(1.20,2.45,sceneScroll),sonic=paused?0:ease(1.80,2.85,sceneScroll);
   if(samurai){const orbit=phase*Math.PI*2;
@@ -84,10 +84,11 @@
       const rotation=side*spread*(24+row*12),turn=side*spread*(22+row*12),stretch=1+spread*(i%3-1)*.3;
       piece.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateY(${turn}deg) rotateZ(${rotation}deg) scale(${stretch},${1+spread*.15})`;
       piece.style.opacity=String((coarse.matches?.64:.75)*ease(.03,.25,sceneScroll)*(1-open*.72)*Math.pow(1-fade,1.25));
-      piece.style.filter=(open>0||fade>0)&&fade<1?`blur(${(open*(coarse.matches?1.5:2.5)+fade*fade*(coarse.matches?4:9)).toFixed(2)}px)`:'none';
+
 
     })
   }
+  if(!paint)return;
   const cx=w*.76+pointer.x*35,cy=h*.38-Math.sin(phase*6.28)*h*.2;
   const glow=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(w,h)*.7);glow.addColorStop(0,'rgba(86,142,113,.19)');glow.addColorStop(.5,'rgba(162,103,45,.10)');glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
   // A veil of drifting jade vapor bridges the image erosion and the new sonic scene.
@@ -117,12 +118,12 @@
  }
  function updateProgress(){const range=document.documentElement.scrollHeight-h;if(progress)progress.style.transform=`scaleX(${range>0?Math.min(1,window.scrollY/range):0})`}
  function parallax(){artNodes.forEach(n=>{const rect=n.getBoundingClientRect(),offset=Math.max(-1,Math.min(1,(rect.top+rect.height/2-h/2)/h));n.style.setProperty('--art-y',(paused?0:offset*(coarse.matches?10:24))+'px');n.style.setProperty('--art-angle',(paused?0:offset*(coarse.matches?.6:1.8))+'deg')})}
- function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):0;if(delta<32&&last){raf=requestAnimationFrame(frame);return}last=now;elapsed+=delta;
+ function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):16.67;last=now;elapsed+=delta;
   const travel=window.scrollY-dragonScroll;dragonScroll=window.scrollY;
   if(travel>1)dragonEyeGlow=1;else dragonEyeGlow*=Math.exp(-delta/170);
   if(travel>2){if(dragonQuiet<=0)dragonBurst=1;dragonQuiet=180}else dragonQuiet=Math.max(0,dragonQuiet-delta);
   dragonBurst*=Math.exp(-delta/440);dragonSweep+=delta*.001*(.035+dragonBurst*1.8);
-  impulse*=Math.exp(-delta/550);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*.12;scroll+=(window.scrollY-scroll)*.12;pointer.x+=(aim.x-pointer.x)*.08;pointer.y+=(aim.y-pointer.y)*.08;draw();parallax();if(heroVisible)pose(elapsed*.001);updateProgress();raf=requestAnimationFrame(frame)}
+  impulse*=Math.exp(-delta/550);const follow=1-Math.exp(-delta/70),pointerFollow=1-Math.exp(-delta/150);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*follow;scroll+=(window.scrollY-scroll)*follow;pointer.x+=(aim.x-pointer.x)*pointerFollow;pointer.y+=(aim.y-pointer.y)*pointerFollow;const paint=now-lastPaint>=32;draw(paint);if(paint){lastPaint=now;if(heroVisible)pose(elapsed*.001)}updateProgress();raf=requestAnimationFrame(frame)}
  function start(){if(!paused&&!document.hidden&&!raf){last=0;raf=requestAnimationFrame(frame)}}
  function state(){if(paused){impulse=0;scrollEnergy=0;dragonBurst=0;dragonQuiet=0;dragonEyeGlow=0}dragonScroll=window.scrollY;document.documentElement.classList.toggle('motion-paused',paused);document.documentElement.classList.toggle('motion-enabled',!paused);cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
  window.addEventListener('pointermove',e=>{if(coarse.matches||paused)return;aim.x=(e.clientX/w-.5)*2;aim.y=(e.clientY/h-.5)*2},{passive:true});
