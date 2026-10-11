@@ -28,7 +28,7 @@
   if(!backCtx||!frontCtx||!auraW)return;
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
   if(paused||!dragonArt.complete||!dragonArt.naturalWidth)return;
-  const t=time*.001+dragonSweep,sw=dragonArt.naturalWidth,sh=dragonArt.naturalHeight;
+  const t=time*.00035+dragonSweep,sw=dragonArt.naturalWidth,sh=dragonArt.naturalHeight;
   const dw=Math.min(auraW*.91,dragonWordWidth*.98),dh=dw*sh/sw;
   const x=auraW*.055+dragonWordWidth*.10,y=(auraH-dh)*.45-auraH*.015,parts=coarse.matches?44:72;
   const dx=Math.sin(t*.8)*dw*.013,dy=Math.cos(t*.65)*auraH*.025,angle=Math.sin(t*.6)*.022;
@@ -44,13 +44,23 @@
     const wave=Math.sin(u*11-t*.9)*auraH*.014+Math.sin(u*6+t*.55)*auraH*.008;
     c.drawImage(dragonArt,i/parts*sw,0,sw/parts+.8,sh,i/parts*dw,wave,dw/parts+.4,dh);
    }
+   if(c===frontCtx&&dragonEyeGlow>.01){
+    // Eye follows the exact animated image strip; it emits only during downward scrolling.
+    const eyeU=.932,stripU=(Math.floor(eyeU*parts)+.5)/parts;
+    const ey=dh*.232+Math.sin(stripU*11-t*.9)*auraH*.014+Math.sin(stripU*6+t*.55)*auraH*.008,ex=dw*eyeU;
+    const core=Math.max(.85,dw*.0028),halo=c.createRadialGradient(ex,ey,0,ex,ey,core*5);
+    halo.addColorStop(0,'rgba(238,228,208,.9)');halo.addColorStop(.25,'rgba(208,172,112,.7)');halo.addColorStop(1,'rgba(134,165,148,0)');
+    c.globalAlpha=dragonEyeGlow;c.fillStyle=halo;c.beginPath();c.arc(ex,ey,core*5,0,Math.PI*2);c.fill();
+    c.fillStyle='#eee4d0';c.shadowColor='#d0ac70';c.shadowBlur=core*3;
+    c.beginPath();c.ellipse(ex,ey,core*1.2,core*.48,-.12,0,Math.PI*2);c.fill();c.shadowBlur=0;
+   }
    c.restore();
   }
  }
 
  const progress=document.querySelector('.scroll-progress');
  let w=0,h=0,raf=0,last=0,elapsed=0,scroll=window.scrollY||0,pointer={x:0,y:0},aim={x:0,y:0},heroVisible=true;
- let dragonBurst=0,dragonSweep=0,dragonScroll=window.scrollY||0,dragonQuiet=0;
+ let dragonEyeGlow=0,dragonBurst=0,dragonSweep=0,dragonScroll=window.scrollY||0,dragonQuiet=0;
  let stars=[],ripples=[],scrollEnergy=0,impulse=0;const artNodes=new Set();
  function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
  function pose(t){const rotationX=paused?0:-4+pointer.y*4+Math.sin(t*.55)*1.7;const rotationY=paused?-3:pointer.x*8+Math.sin(t*.4)*4+Math.min(scroll/h,1)*9;const rotationZ=paused?0:Math.sin(t*.25)*.6;stage.style.transform=`rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg) translateY(${paused?0:Math.sin(t*.7)*4}px)`}
@@ -76,11 +86,12 @@
  function parallax(){artNodes.forEach(n=>{const rect=n.getBoundingClientRect(),offset=Math.max(-1,Math.min(1,(rect.top+rect.height/2-h/2)/h));n.style.setProperty('--art-y',(paused?0:offset*(coarse.matches?10:24))+'px');n.style.setProperty('--art-angle',(paused?0:offset*(coarse.matches?.6:1.8))+'deg')})}
  function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):0;if(delta<32&&last){raf=requestAnimationFrame(frame);return}last=now;elapsed+=delta;
   const travel=window.scrollY-dragonScroll;dragonScroll=window.scrollY;
+  if(travel>1)dragonEyeGlow=1;else dragonEyeGlow*=Math.exp(-delta/170);
   if(travel>2){if(dragonQuiet<=0)dragonBurst=1;dragonQuiet=180}else dragonQuiet=Math.max(0,dragonQuiet-delta);
-  dragonBurst*=Math.exp(-delta/440);dragonSweep+=delta*.001*(.16+dragonBurst*8);
+  dragonBurst*=Math.exp(-delta/440);dragonSweep+=delta*.001*(.035+dragonBurst*1.8);
   impulse*=Math.exp(-delta/550);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*.12;scroll+=(window.scrollY-scroll)*.12;pointer.x+=(aim.x-pointer.x)*.08;pointer.y+=(aim.y-pointer.y)*.08;draw();parallax();if(heroVisible)pose(elapsed*.001);updateProgress();raf=requestAnimationFrame(frame)}
  function start(){if(!paused&&!document.hidden&&!raf){last=0;raf=requestAnimationFrame(frame)}}
- function state(){if(paused){impulse=0;scrollEnergy=0;dragonBurst=0;dragonQuiet=0}dragonScroll=window.scrollY;document.documentElement.classList.toggle('motion-paused',paused);toggle.textContent=paused?'Bật chuyển động':'Tắt chuyển động';toggle.setAttribute('aria-pressed',String(!paused));cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
+ function state(){if(paused){impulse=0;scrollEnergy=0;dragonBurst=0;dragonQuiet=0;dragonEyeGlow=0}dragonScroll=window.scrollY;document.documentElement.classList.toggle('motion-paused',paused);toggle.textContent=paused?'Bật chuyển động':'Tắt chuyển động';toggle.setAttribute('aria-pressed',String(!paused));cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
  toggle.onclick=()=>{paused=!paused;try{localStorage.setItem('trippin-motion',paused?'off':'on')}catch{}state()};
  reduce.addEventListener('change',()=>{paused=reduce.matches;state()});
  window.addEventListener('pointermove',e=>{if(coarse.matches||paused)return;aim.x=(e.clientX/w-.5)*2;aim.y=(e.clientY/h-.5)*2},{passive:true});
