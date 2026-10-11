@@ -41,3 +41,5 @@ h3 .heading-icon,summary .heading-icon,.label .heading-icon{width:.72em;height:.
 
 /* A restrained warm monochrome grade connects both studies to the brass palette. */
 .about-video video{object-fit:cover;filter:sepia(.16) saturate(.55) hue-rotate(5deg);border-color:#d0ac7029}
+
+.game-demo video{border:1px solid #d0ac7029;border-radius:3px;background:#081210;box-shadow:0 12px 30px #02080655;aspect-ratio:16/9;object-fit:contain}

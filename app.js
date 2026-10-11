@@ -27,15 +27,16 @@ function videoMedia(card,d){
  const youtube=d.youtube||(TRIPPIN_YOUTUBE.videoId(d.link)?d.link:'');if(TRIPPIN_YOUTUBE.videoId(youtube))TRIPPIN_YOUTUBE.mountVideo(card,{...d,youtube});
 }
 const aboutVideos=(data.aboutVideos||[]).slice(0,2);for(let i=0;i<2;i++){const d=aboutVideos[i],card=el('article','about-video');if(d){videoMedia(card,d);if(d.title)card.append(el('h3','',d.title));if(d.description)card.append(el('p','',d.description))}else{const placeholder=el('div','video-empty');placeholder.append(el('span','label','Video '+String(i+1).padStart(2,'0')+' · Sẽ được bổ sung'));card.append(placeholder)}$('#aboutVideos').append(card)}
-// Warm the video buffer shortly before the viewer reaches About Me.
-const aboutMedia=[...document.querySelectorAll('#aboutVideos video')];
+const demos=data.gameDemos||[];$('#gameEmpty').hidden=demos.length>0;
+demos.forEach(d=>{const card=el('article','game-demo');videoMedia(card,d);card.append(el('h3','',d.title));if(d.role)card.append(el('p','',d.role));const link=safeUrl(d.link);if(link&&!TRIPPIN_YOUTUBE.videoId(link)){const a=el('a','quiet-link','Mở demo ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';card.append(a)}if(d.description||d.credits){const more=el('details','project-detail');more.append(el('summary','','Chi tiết demo'));if(d.description)more.append(el('p','',d.description));if(d.credits)more.append(el('p','',d.credits));card.append(more)}$('#gameDemos').append(card)});
+
+// Warm the video buffer shortly before the viewer reaches a media section.
+const aboutMedia=[...document.querySelectorAll('#aboutVideos video, #gameDemos video')];
 if('IntersectionObserver' in window){
  const warm=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;const video=entry.target;video.preload=navigator.connection?.saveData?'metadata':'auto';warm.unobserve(video)}},{rootMargin:'600px 0px'});
  aboutMedia.forEach(video=>warm.observe(video));
 }else aboutMedia.forEach(video=>video.preload='metadata');
 document.addEventListener('visibilitychange',()=>{if(document.hidden)aboutMedia.forEach(video=>video.pause())});
-const demos=data.gameDemos||[];$('#gameEmpty').hidden=demos.length>0;
-demos.forEach(d=>{const card=el('article','game-demo');videoMedia(card,d);card.append(el('h3','',d.title));if(d.role)card.append(el('p','',d.role));const link=safeUrl(d.link);if(link&&!TRIPPIN_YOUTUBE.videoId(link)){const a=el('a','quiet-link','Mở demo ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';card.append(a)}if(d.description||d.credits){const more=el('details','project-detail');more.append(el('summary','','Chi tiết demo'));if(d.description)more.append(el('p','',d.description));if(d.credits)more.append(el('p','',d.credits));card.append(more)}$('#gameDemos').append(card)});
 
 document.querySelectorAll('[data-link]').forEach(a=>{const u=safeUrl(data.links?.[a.dataset.link]);if(u)a.href=u;else a.hidden=true});
 if(location.hostname.endsWith('.github.io')&&!new URLSearchParams(location.search).has('preview')){document.querySelectorAll('.preview-note,.admin-entry').forEach(n=>{n.hidden=true})}

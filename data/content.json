@@ -89,12 +89,24 @@
   "notes": [],
   "gameDemos": [
     {
-      "title": "GOSU — Sound Redesign",
+      "title": "GOSU — Sound Redesign 01",
       "game": "Thử nghiệm thiết kế lại âm thanh gameplay",
       "role": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
       "description": "Demo thực hành, chưa phải bản mix cuối. Nhạc nền được thử nghiệm bằng Suno và Udio.",
       "credits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo: AI (Suno, Udio), không phải nhạc tôi tự sản xuất.",
-      "link": "https://drive.google.com/drive/folders/1iLduOGDDWuezFXaPa_Aza2dfhVE_tjVw?usp=drive_link"
+      "link": "",
+      "video": "assets/gosu-demo-1.mp4",
+      "poster": "assets/gosu-demo-1.jpg"
+    },
+    {
+      "title": "GOSU — Sound Redesign 02",
+      "game": "Thử nghiệm thiết kế lại âm thanh gameplay",
+      "role": "Tắt âm thanh gốc và tái dựng hiệu ứng chiến đấu, môi trường và nhân vật.",
+      "description": "Demo thực hành, chưa phải bản mix cuối. Nhạc nền được thử nghiệm bằng Suno và Udio.",
+      "credits": "Hình ảnh: gameplay GOSU. Nhạc nền trong demo: AI (Suno, Udio), không phải nhạc tôi tự sản xuất.",
+      "link": "",
+      "video": "assets/gosu-demo-2.mp4",
+      "poster": "assets/gosu-demo-2.jpg"
     }
   ],
   "profile": {
@@ -119,7 +131,7 @@
     "productionBody": "Làm beat và phát triển bản phối, với hip-hop là sở trường. Tìm chất liệu, nhịp điệu và không gian phù hợp với ý tưởng của bài.",
     "songwritingBody": "Sáng tác là một phần trong hành trình làm nhạc của tôi từ năm 2020, bên cạnh production và hoàn thiện âm thanh.",
     "mixBody": "Xử lý và hoàn thiện âm thanh, hướng đến sự rõ ràng, cân bằng và cảm xúc liền mạch của bản nhạc.",
-    "gameIntro": "Sound design cho game là hướng đi mới tôi đang khám phá. Qua các demo thực hành, tôi muốn học thêm và tìm cơ hội phát triển trong lĩnh vực này.",
+    "gameIntro": "Bên cạnh sản xuất âm nhạc, tôi đang mở rộng hướng đi sang sound design cho game, mang theo cách cảm nhận về nhịp điệu, không gian và chất liệu âm thanh. Tôi quan tâm đến cách âm thanh kết nối với hình ảnh và chuyển động, làm rõ từng hành động và tạo chiều sâu cho thế giới trong game. Những demo dưới đây thể hiện cách tôi khai thác các chi tiết ấy để xây dựng bầu không khí và góp phần kể câu chuyện qua trải nghiệm của người chơi.",
     "contactIntro": "Để trao đổi về một bài nhạc, dự án hoặc cơ hội cộng tác, bạn có thể liên hệ với tôi qua:",
     "workHeadingLead": "Selected",
     "workHeadingTail": "works",
