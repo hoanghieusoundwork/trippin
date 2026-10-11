@@ -27,40 +27,57 @@
   if(!backCtx||!frontCtx||!auraW)return;
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
   if(paused)return;
-  const clock=time*.001,head=clock*.28+.3,segments=coarse.matches?56:84;
-  const cx=auraW*.5,cy=auraH*.5,rx=auraW*.44,ry=auraH*.28;
-  // A tapered, breathing ink-serpent: body alternates between planes around the word.
-  function point(a){return {x:cx+Math.cos(a)*rx+Math.sin(a*3-clock*.4)*auraW*.018,
-   y:cy+Math.sin(a)*ry+Math.sin(a*2+clock*.35)*auraH*.07+Math.cos(a)*auraH*.09,
-   z:Math.sin(a+.65+Math.min(scroll/Math.max(h,1),1)*.6)}}
+  const t=time*.001,steps=coarse.matches?72:112;
+  // An open calligraphic gesture, not a closed orbit. Four joined cubic strokes.
+  const curves=[[[.10,.76],[.37,.91],[.89,.92],[.90,.64]],
+   [[.90,.64],[.99,.31],[.79,.09],[.48,.15]],
+   [[.48,.15],[.12,.13],[.02,.36],[.18,.58]],
+   [[.18,.58],[.34,.79],[.68,.53],[.80,.24]]];
+  function point(u){const index=Math.min(3,Math.floor(u*4)),v=u===1?1:u*4-index,iv=1-v,c=curves[index];
+   let x=iv*iv*iv*c[0][0]+3*iv*iv*v*c[1][0]+3*iv*v*v*c[2][0]+v*v*v*c[3][0];
+   let y=iv*iv*iv*c[0][1]+3*iv*iv*v*c[1][1]+3*iv*v*v*c[2][1]+v*v*v*c[3][1];
+   const breath=Math.sin(t*.42+u*8),bend=Math.min(scroll/Math.max(h,1),1);
+   x+=Math.sin(t*.31+u*10)*.009+pointer.x*.004;
+   y+=breath*.025+Math.sin(u*Math.PI)*bend*.025;
+   return {x:x*auraW,y:y*auraH,front:u<.23||u>.70,u};
+  }
+  const spine=Array.from({length:steps+1},(_,i)=>point(i/steps));
+  spine.forEach((p,i)=>{const a=spine[Math.max(0,i-1)],b=spine[Math.min(steps,i+1)],len=Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));p.nx=-(b.y-a.y)/len;p.ny=(b.x-a.x)/len;
+   p.width=auraH*.034*Math.pow(Math.sin(p.u*Math.PI*.87),.9)*(1+.15*Math.sin(p.u*19-t*.5));});
   for(const c of [backCtx,frontCtx]){
-   c.beginPath();let connected=false;
-   for(let k=0;k<=segments;k++){const a=head-(1-k/segments)*Math.PI*1.86,p=point(a),belongs=(p.z>0)===(c===frontCtx);
-    if(belongs){if(connected)c.lineTo(p.x,p.y);else c.moveTo(p.x,p.y)}connected=belongs}
-   c.lineCap='round';c.lineWidth=auraH*.065;c.strokeStyle='rgba(134,165,148,.11)';
-   c.shadowColor='rgba(134,165,148,.45)';c.shadowBlur=coarse.matches?8:20;c.stroke();c.shadowBlur=0;
+   const front=c===frontCtx,groups=[];let group=[];
+   for(const p of spine){if(p.front===front){group.push(p)}else if(group.length){group.push(p);groups.push(group);group=[]}}
+   if(group.length)groups.push(group);
+   for(const g of groups){if(g.length<2)continue;
+    // One continuous silhouette prevents the dotted trail of many blurred segments.
+    for(const haze of [true,false]){c.beginPath();const spread=haze?2.1:1;
+     g.forEach((p,i)=>{const x=p.x+p.nx*p.width*spread,y=p.y+p.ny*p.width*spread;i?c.lineTo(x,y):c.moveTo(x,y)});
+     for(let i=g.length-1;i>=0;i--){const p=g[i];c.lineTo(p.x-p.nx*p.width*spread,p.y-p.ny*p.width*spread)}
+     c.closePath();c.fillStyle=haze?'rgba(134,165,148,.10)':'rgba(134,165,148,.16)';
+     c.shadowColor='rgba(134,165,148,.35)';c.shadowBlur=haze?(coarse.matches?10:24):0;c.fill();c.shadowBlur=0;
+    }
+    // Fine drifting fibres break the smooth body into smoke and brush grain.
+    for(let j=0;j<(coarse.matches?4:7);j++){c.beginPath();g.forEach((p,i)=>{
+     const offset=(j/6-.5)*p.width*2+Math.sin(p.u*31-t*.55+j*.7)*p.width*.3;
+     const x=p.x+p.nx*offset,y=p.y+p.ny*offset;i?c.lineTo(x,y):c.moveTo(x,y)});
+     c.strokeStyle=j===2?'rgba(208,172,112,.48)':`rgba(185,199,186,${.06+(j%3)*.045})`;c.lineWidth=j===2?.85:.55;c.stroke();
+    }
+   }
   }
-  for(let k=0;k<segments;k++){
-   const u=k/segments,a=head-(1-u)*Math.PI*1.86,p=point(a),q=point(a+Math.PI*1.86/segments);
-   const c=p.z>0?frontCtx:backCtx,body=Math.pow(Math.sin(u*Math.PI*.86),.8),width=Math.max(.5,body*auraH*.028);
-   c.lineCap='round';
-   c.strokeStyle=`rgba(134,165,148,${.05+u*.22})`;c.lineWidth=width;
-   c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();
-   c.strokeStyle=`rgba(208,172,112,${u*.48})`;c.lineWidth=Math.max(.5,width*.12);
-   c.beginPath();c.moveTo(p.x,p.y-width*.2);c.lineTo(q.x,q.y-width*.2);c.stroke();
-  }
-  const p=point(head),q=point(head+.012),c=p.z>0?frontCtx:backCtx,scale=Math.max(3,auraH*.031);
-  c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(q.y-p.y,q.x-p.x));
-  c.shadowColor='rgba(134,165,148,.6)';c.shadowBlur=coarse.matches?6:16;
-  c.fillStyle='rgba(134,165,148,.35)';c.strokeStyle='rgba(208,172,112,.72)';c.lineWidth=.9;
-  c.beginPath();c.moveTo(-scale*2,0);c.quadraticCurveTo(-scale,-scale,scale*.4,-scale*.65);
-  c.lineTo(scale*1.8,-scale*.2);c.lineTo(scale*1.15,scale*.25);c.lineTo(scale*.3,scale*.5);
-  c.quadraticCurveTo(-scale,scale,-scale*2,0);c.closePath();c.fill();c.stroke();c.shadowBlur=0;
-  // Brush-like crest and whiskers suggest a dragon without a literal illustration.
-  for(const side of [-1,1]){c.strokeStyle='rgba(208,172,112,.5)';c.beginPath();c.moveTo(0,side*scale*.5);
-   c.quadraticCurveTo(-scale*.9,side*scale*1.6,-scale*2.6,side*scale*1.1);c.stroke();
-   c.strokeStyle='rgba(134,165,148,.4)';c.beginPath();c.moveTo(scale,side*scale*.15);
-   c.quadraticCurveTo(scale*1.5,side*scale*1.8,-scale*1.8,side*scale*2.2);c.stroke()}
+  // A swept brow, two antler strokes and long whiskers give the mist a dragon's gesture.
+  const p=spine[steps],q=spine[steps-1],c=frontCtx,s=auraH*.043;
+  c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(p.y-q.y,p.x-q.x));c.lineCap='round';c.lineJoin='round';
+  c.shadowColor='rgba(134,165,148,.7)';c.shadowBlur=coarse.matches?8:18;
+  c.fillStyle='rgba(134,165,148,.22)';c.strokeStyle='rgba(208,172,112,.65)';c.lineWidth=.9;
+  c.beginPath();c.moveTo(-s*2.4,0);c.bezierCurveTo(-s*1.6,-s*.5,-s*.8,-s*1.0,s*.2,-s*.75);
+  c.quadraticCurveTo(s*.65,-s*.8,s*1.5,-s*.25);c.lineTo(s*1.9,-s*.08);
+  c.quadraticCurveTo(s*1.35,s*.15,s*.55,s*.15);c.lineTo(s*.9,s*.48);
+  c.bezierCurveTo(-s*.2,s*.8,-s*1.1,s*.35,-s*2.4,0);c.closePath();c.fill();c.stroke();c.shadowBlur=0;
+  for(let j=0;j<2;j++){const offset=j*s*.45;c.strokeStyle=j?'rgba(185,199,186,.55)':'rgba(208,172,112,.7)';c.beginPath();c.moveTo(-s*.5-offset,-s*.55);
+   c.bezierCurveTo(-s*1.25-offset,-s*1.1,-s*2.0-offset,-s*1.0,-s*2.7-offset,-s*2.0);c.stroke();
+   c.beginPath();c.moveTo(-s*1.8-offset,-s*1.16);c.quadraticCurveTo(-s*2.1-offset,-s*1.4,-s*2.0-offset,-s*1.85);c.stroke();}
+  for(const side of [-1,1]){c.strokeStyle='rgba(185,199,186,.42)';c.beginPath();c.moveTo(s*.9,side*s*.18);
+   c.bezierCurveTo(s*2.6,side*s*1.3,s*.6,side*s*2.5,-s*3.7,side*s*1.6+Math.sin(t*.6)*s*.4);c.stroke();}
   c.restore();
  }
 
