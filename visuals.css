@@ -28,6 +28,6 @@ body{isolation:isolate}#ambientCanvas{position:fixed;inset:0;width:100%;height:1
 @media(prefers-reduced-motion:reduce){.title-aura{display:none!important}}
 
 /* Soft ink and jade haze soften the serpent's rear plane. */
-.title-aura-back{filter:blur(1.8px);opacity:.9}
-.title-aura-front{opacity:.78}
-@media(max-width:600px){.title-aura-back{filter:blur(1.5px)}.title-aura-front{opacity:.7}}
+.title-aura-back{filter:blur(.6px);opacity:.95}
+.title-aura-front{opacity:.95}
+@media(max-width:600px){.title-aura-back{filter:none}.title-aura-front{opacity:.9}}

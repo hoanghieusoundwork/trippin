@@ -21,79 +21,30 @@
  const titleBack=document.createElement('canvas'),titleFront=document.createElement('canvas');
  titleBack.className='title-aura title-aura-back';titleFront.className='title-aura title-aura-front';
  for(const n of [titleBack,titleFront]){n.setAttribute('aria-hidden','true');title.append(n)}
- const backCtx=titleBack.getContext('2d'),frontCtx=titleFront.getContext('2d');let auraW=0,auraH=0;
- function sizeAura(){const ratio=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);auraW=(title.clientWidth||window.innerWidth*.85)*1.12;auraH=(title.clientHeight||window.innerHeight*.2)*1.9;for(const [n,c] of [[titleBack,backCtx],[titleFront,frontCtx]]){n.width=Math.round(auraW*ratio);n.height=Math.round(auraH*ratio);c?.setTransform(ratio,0,0,ratio,0,0)}}
+ const backCtx=titleBack.getContext('2d'),frontCtx=titleFront.getContext('2d');let auraW=0,auraH=0,dragonWordWidth=0;
+ const dragonArt=document.createElement('img');dragonArt.decoding='async';dragonArt.onload=()=>draw();dragonArt.src='assets/visuals/dragon-weave-v1.webp';
+ function sizeAura(){const letters=Array.from(title.querySelectorAll?.('.trippin-front .trippin-letter')||[]),end=letters[letters.length-1];dragonWordWidth=end?(end.offsetLeft+end.offsetWidth):(title.clientWidth||window.innerWidth*.85)*.75;const ratio=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);auraW=(title.clientWidth||window.innerWidth*.85)*1.12;auraH=(title.clientHeight||window.innerHeight*.2)*1.9;for(const [n,c] of [[titleBack,backCtx],[titleFront,frontCtx]]){n.width=Math.round(auraW*ratio);n.height=Math.round(auraH*ratio);c?.setTransform(ratio,0,0,ratio,0,0)}}
  function drawAura(time){
   if(!backCtx||!frontCtx||!auraW)return;
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
-  if(paused)return;
-  const t=time*.001+dragonSweep,steps=coarse.matches?72:112;
-  // An open calligraphic gesture, not a closed orbit. Four joined cubic strokes.
-  const curves=[[[.10,.76],[.37,.91],[.89,.92],[.90,.64]],
-   [[.90,.64],[.99,.31],[.79,.09],[.48,.15]],
-   [[.48,.15],[.12,.13],[.02,.36],[.18,.58]],
-   [[.18,.58],[.34,.79],[.63,.51],[.69,.20]]];
-  function point(u){const index=Math.min(3,Math.floor(u*4)),v=u===1?1:u*4-index,iv=1-v,c=curves[index];
-   let x=iv*iv*iv*c[0][0]+3*iv*iv*v*c[1][0]+3*iv*v*v*c[2][0]+v*v*v*c[3][0];
-   let y=iv*iv*iv*c[0][1]+3*iv*iv*v*c[1][1]+3*iv*v*v*c[2][1]+v*v*v*c[3][1];
-   const breath=Math.sin(t*.42+u*8),bend=Math.min(scroll/Math.max(h,1),1);
-   x+=Math.sin(t*.31+u*10)*.009+pointer.x*.004;
-   y+=breath*.025+Math.sin(u*Math.PI)*bend*.025;
-   // The entire skeleton, including the head, rides the same travelling gesture.
-   const angle=Math.sin(t*.7)*.052,ca=Math.cos(angle),sa=Math.sin(angle),px=(x-.5)*auraW,py=(y-.5)*auraH;
-   return {x:auraW*.5+px*ca-py*sa+Math.sin(t*.9)*auraW*.024,
-    y:auraH*.5+px*sa+py*ca+Math.cos(t*.8)*auraH*.045,front:u<.23||u>.70,u};
-  }
-  const spine=Array.from({length:steps+1},(_,i)=>point(i/steps));
-  spine.forEach((p,i)=>{const a=spine[Math.max(0,i-1)],b=spine[Math.min(steps,i+1)],len=Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));p.nx=-(b.y-a.y)/len;p.ny=(b.x-a.x)/len;
-   p.width=auraH*.034*Math.pow(Math.sin(p.u*Math.PI*.87),.9)*(1+.15*Math.sin(p.u*19-t*.5));});
+  if(paused||!dragonArt.complete||!dragonArt.naturalWidth)return;
+  const t=time*.001+dragonSweep,sw=dragonArt.naturalWidth,sh=dragonArt.naturalHeight;
+  const dw=Math.min(auraW*.91,dragonWordWidth*1.06),dh=dw*sh/sw;
+  const x=auraW*.06,y=(auraH-dh)*.45,parts=coarse.matches?44:72;
+  const dx=Math.sin(t*.8)*dw*.013,dy=Math.cos(t*.65)*auraH*.025,angle=Math.sin(t*.6)*.022;
+  // Illustration is woven through the letter faces in alternating depth planes.
+  // Every strip, including horns and head, follows the same animated skeleton.
   for(const c of [backCtx,frontCtx]){
-   const front=c===frontCtx,groups=[];let group=[];
-   for(const p of spine){if(p.front===front){group.push(p)}else if(group.length){group.push(p);groups.push(group);group=[]}}
-   if(group.length)groups.push(group);
-   for(const g of groups){if(g.length<2)continue;
-    // One continuous silhouette prevents the dotted trail of many blurred segments.
-    for(const haze of [true,false]){c.beginPath();const spread=haze?2.1:1;
-     g.forEach((p,i)=>{const x=p.x+p.nx*p.width*spread,y=p.y+p.ny*p.width*spread;i?c.lineTo(x,y):c.moveTo(x,y)});
-     for(let i=g.length-1;i>=0;i--){const p=g[i];c.lineTo(p.x-p.nx*p.width*spread,p.y-p.ny*p.width*spread)}
-     c.closePath();c.fillStyle=haze?'rgba(134,165,148,.10)':'rgba(134,165,148,.16)';
-     c.shadowColor='rgba(134,165,148,.35)';c.shadowBlur=haze?(coarse.matches?10:24):0;c.fill();c.shadowBlur=0;
-    }
-    // Fine drifting fibres break the smooth body into smoke and brush grain.
-    for(let j=0;j<(coarse.matches?4:7);j++){c.beginPath();g.forEach((p,i)=>{
-     const offset=(j/6-.5)*p.width*2+Math.sin(p.u*31-t*.55+j*.7)*p.width*.3;
-     const x=p.x+p.nx*offset,y=p.y+p.ny*offset;i?c.lineTo(x,y):c.moveTo(x,y)});
-     c.strokeStyle=j===2?'rgba(208,172,112,.48)':`rgba(185,199,186,${.06+(j%3)*.045})`;c.lineWidth=j===2?.85:.55;c.stroke();
-    }
+   c.save();c.translate(x+dw*.5+dx,y+dh*.5+dy);c.rotate(angle);c.translate(-dw*.5,-dh*.5);
+   c.globalAlpha=c===frontCtx?.9:.76;
+   for(let i=0;i<parts;i++){
+    const u=(i+.5)/parts,front=(u>.13&&u<.21)||(u>.40&&u<.48)||(u>.64&&u<.72)||u>.89;
+    if(front!==(c===frontCtx))continue;
+    const wave=Math.sin(u*11-t*.9)*auraH*.014+Math.sin(u*6+t*.55)*auraH*.008;
+    c.drawImage(dragonArt,i/parts*sw,0,sw/parts+.8,sh,i/parts*dw,wave,dw/parts+.4,dh);
    }
+   c.restore();
   }
-  // Swept dorsal thorns catch a brass edge through the jade mist.
-  const thornCount=coarse.matches?12:18;
-  for(let j=0;j<thornCount;j++){
-   const i=Math.round((.14+j/thornCount*.78)*steps),p=spine[i],q=spine[Math.min(steps,i+2)],c=p.front?frontCtx:backCtx;
-   const tx=p.ny,ty=-p.nx,side=-1,length=auraH*(.045+.025*Math.sin(j*1.7)**2)*( .5+Math.sin(p.u*Math.PI)*.5);
-   const baseX=p.x+p.nx*p.width*side,baseY=p.y+p.ny*p.width*side;
-   c.beginPath();c.moveTo(baseX-tx*3,baseY-ty*3);
-   c.lineTo(baseX+p.nx*length*side+tx*length*.7,baseY+p.ny*length*side+ty*length*.7);
-   c.lineTo(q.x+q.nx*q.width*side,q.y+q.ny*q.width*side);
-   c.lineTo(baseX+p.nx*p.width*.15,baseY+p.ny*p.width*.15);c.closePath();
-   c.fillStyle='rgba(134,165,148,.23)';c.fill();c.strokeStyle='rgba(208,172,112,.43)';c.lineWidth=.7;c.stroke();
-  }
-  // A swept brow, two antler strokes and long whiskers give the mist a dragon's gesture.
-  const p=spine[steps],q=spine[steps-1],c=frontCtx,s=auraH*.043;
-  c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(p.y-q.y,p.x-q.x));c.lineCap='round';c.lineJoin='round';
-  c.shadowColor='rgba(134,165,148,.7)';c.shadowBlur=coarse.matches?8:18;
-  c.fillStyle='rgba(134,165,148,.22)';c.strokeStyle='rgba(208,172,112,.65)';c.lineWidth=.9;
-  c.beginPath();c.moveTo(-s*2.4,0);c.bezierCurveTo(-s*1.6,-s*.5,-s*.8,-s*1.0,s*.2,-s*.75);
-  c.quadraticCurveTo(s*.65,-s*.8,s*1.5,-s*.25);c.lineTo(s*1.9,-s*.08);
-  c.quadraticCurveTo(s*1.35,s*.15,s*.55,s*.15);c.lineTo(s*.9,s*.48);
-  c.bezierCurveTo(-s*.2,s*.8,-s*1.1,s*.35,-s*2.4,0);c.closePath();c.fill();c.stroke();c.shadowBlur=0;
-  for(let j=0;j<2;j++){const offset=j*s*.45;c.strokeStyle=j?'rgba(185,199,186,.55)':'rgba(208,172,112,.7)';c.beginPath();c.moveTo(-s*.5-offset,-s*.55);
-   c.bezierCurveTo(-s*1.25-offset,-s*1.1,-s*2.0-offset,-s*1.0,-s*2.7-offset,-s*2.0);c.stroke();
-   c.beginPath();c.moveTo(-s*1.8-offset,-s*1.16);c.quadraticCurveTo(-s*2.1-offset,-s*1.4,-s*2.0-offset,-s*1.85);c.stroke();}
-  for(const side of [-1,1]){c.strokeStyle='rgba(185,199,186,.42)';c.beginPath();c.moveTo(s*.9,side*s*.18);
-   c.bezierCurveTo(s*2.6,side*s*1.3,s*.6,side*s*2.5,-s*3.7,side*s*1.6+Math.sin(t*.6)*s*.4);c.stroke();}
-  c.restore();
  }
 
  const progress=document.querySelector('.scroll-progress');
