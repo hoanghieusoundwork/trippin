@@ -27,7 +27,7 @@
   if(!backCtx||!frontCtx||!auraW)return;
   for(const c of [backCtx,frontCtx])c.clearRect(0,0,auraW,auraH);
   if(paused)return;
-  const t=time*.001,steps=coarse.matches?72:112;
+  const t=time*.001+dragonSweep,steps=coarse.matches?72:112;
   // An open calligraphic gesture, not a closed orbit. Four joined cubic strokes.
   const curves=[[[.10,.76],[.37,.91],[.89,.92],[.90,.64]],
    [[.90,.64],[.99,.31],[.79,.09],[.48,.15]],
@@ -39,7 +39,10 @@
    const breath=Math.sin(t*.42+u*8),bend=Math.min(scroll/Math.max(h,1),1);
    x+=Math.sin(t*.31+u*10)*.009+pointer.x*.004;
    y+=breath*.025+Math.sin(u*Math.PI)*bend*.025;
-   return {x:x*auraW,y:y*auraH,front:u<.23||u>.70,u};
+   // The entire skeleton, including the head, rides the same travelling gesture.
+   const angle=Math.sin(t*.7)*.052,ca=Math.cos(angle),sa=Math.sin(angle),px=(x-.5)*auraW,py=(y-.5)*auraH;
+   return {x:auraW*.5+px*ca-py*sa+Math.sin(t*.9)*auraW*.024,
+    y:auraH*.5+px*sa+py*ca+Math.cos(t*.8)*auraH*.045,front:u<.23||u>.70,u};
   }
   const spine=Array.from({length:steps+1},(_,i)=>point(i/steps));
   spine.forEach((p,i)=>{const a=spine[Math.max(0,i-1)],b=spine[Math.min(steps,i+1)],len=Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));p.nx=-(b.y-a.y)/len;p.ny=(b.x-a.x)/len;
@@ -64,6 +67,18 @@
     }
    }
   }
+  // Swept dorsal thorns catch a brass edge through the jade mist.
+  const thornCount=coarse.matches?12:18;
+  for(let j=0;j<thornCount;j++){
+   const i=Math.round((.14+j/thornCount*.78)*steps),p=spine[i],q=spine[Math.min(steps,i+2)],c=p.front?frontCtx:backCtx;
+   const tx=p.ny,ty=-p.nx,side=-1,length=auraH*(.045+.025*Math.sin(j*1.7)**2)*( .5+Math.sin(p.u*Math.PI)*.5);
+   const baseX=p.x+p.nx*p.width*side,baseY=p.y+p.ny*p.width*side;
+   c.beginPath();c.moveTo(baseX-tx*3,baseY-ty*3);
+   c.lineTo(baseX+p.nx*length*side+tx*length*.7,baseY+p.ny*length*side+ty*length*.7);
+   c.lineTo(q.x+q.nx*q.width*side,q.y+q.ny*q.width*side);
+   c.lineTo(baseX+p.nx*p.width*.15,baseY+p.ny*p.width*.15);c.closePath();
+   c.fillStyle='rgba(134,165,148,.23)';c.fill();c.strokeStyle='rgba(208,172,112,.43)';c.lineWidth=.7;c.stroke();
+  }
   // A swept brow, two antler strokes and long whiskers give the mist a dragon's gesture.
   const p=spine[steps],q=spine[steps-1],c=frontCtx,s=auraH*.043;
   c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(p.y-q.y,p.x-q.x));c.lineCap='round';c.lineJoin='round';
@@ -83,6 +98,7 @@
 
  const progress=document.querySelector('.scroll-progress');
  let w=0,h=0,raf=0,last=0,elapsed=0,scroll=window.scrollY||0,pointer={x:0,y:0},aim={x:0,y:0},heroVisible=true;
+ let dragonBurst=0,dragonSweep=0,dragonScroll=window.scrollY||0,dragonQuiet=0;
  let stars=[],ripples=[],scrollEnergy=0,impulse=0;const artNodes=new Set();
  function resize(){sizeAura();w=window.innerWidth;h=window.innerHeight;const dpr=Math.min(window.devicePixelRatio||1,coarse.matches?1.25:1.5);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(fx){interactionCanvas.width=canvas.width;interactionCanvas.height=canvas.height;fx.setTransform(dpr,0,0,dpr,0,0)}let seed=2020;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};stars=Array.from({length:coarse.matches?95:210},()=>({x:random()*2-1,y:random()*2-1,z:random()*900,phase:random()*Math.PI*2,r:random()*.8+.4}));draw();if(paused)pose(0)}
  function pose(t){const rotationX=paused?0:-4+pointer.y*4+Math.sin(t*.55)*1.7;const rotationY=paused?-3:pointer.x*8+Math.sin(t*.4)*4+Math.min(scroll/h,1)*9;const rotationZ=paused?0:Math.sin(t*.25)*.6;stage.style.transform=`rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg) translateY(${paused?0:Math.sin(t*.7)*4}px)`}
@@ -106,9 +122,13 @@
  }
  function updateProgress(){const range=document.documentElement.scrollHeight-h;if(progress)progress.style.transform=`scaleX(${range>0?Math.min(1,window.scrollY/range):0})`}
  function parallax(){artNodes.forEach(n=>{const rect=n.getBoundingClientRect(),offset=Math.max(-1,Math.min(1,(rect.top+rect.height/2-h/2)/h));n.style.setProperty('--art-y',(paused?0:offset*(coarse.matches?10:24))+'px');n.style.setProperty('--art-angle',(paused?0:offset*(coarse.matches?.6:1.8))+'deg')})}
- function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):0;if(delta<32&&last){raf=requestAnimationFrame(frame);return}last=now;elapsed+=delta;impulse*=Math.exp(-delta/550);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*.12;scroll+=(window.scrollY-scroll)*.12;pointer.x+=(aim.x-pointer.x)*.08;pointer.y+=(aim.y-pointer.y)*.08;draw();parallax();if(heroVisible)pose(elapsed*.001);updateProgress();raf=requestAnimationFrame(frame)}
+ function frame(now){raf=0;if(paused||document.hidden)return;const delta=last?Math.min(now-last,80):0;if(delta<32&&last){raf=requestAnimationFrame(frame);return}last=now;elapsed+=delta;
+  const travel=window.scrollY-dragonScroll;dragonScroll=window.scrollY;
+  if(travel>2){if(dragonQuiet<=0)dragonBurst=1;dragonQuiet=180}else dragonQuiet=Math.max(0,dragonQuiet-delta);
+  dragonBurst*=Math.exp(-delta/440);dragonSweep+=delta*.001*(.16+dragonBurst*8);
+  impulse*=Math.exp(-delta/550);scrollEnergy+=(Math.min(Math.abs(window.scrollY-scroll)/160,1)-scrollEnergy)*.12;scroll+=(window.scrollY-scroll)*.12;pointer.x+=(aim.x-pointer.x)*.08;pointer.y+=(aim.y-pointer.y)*.08;draw();parallax();if(heroVisible)pose(elapsed*.001);updateProgress();raf=requestAnimationFrame(frame)}
  function start(){if(!paused&&!document.hidden&&!raf){last=0;raf=requestAnimationFrame(frame)}}
- function state(){if(paused){impulse=0;scrollEnergy=0}document.documentElement.classList.toggle('motion-paused',paused);toggle.textContent=paused?'Bật chuyển động':'Tắt chuyển động';toggle.setAttribute('aria-pressed',String(!paused));cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
+ function state(){if(paused){impulse=0;scrollEnergy=0;dragonBurst=0;dragonQuiet=0}dragonScroll=window.scrollY;document.documentElement.classList.toggle('motion-paused',paused);toggle.textContent=paused?'Bật chuyển động':'Tắt chuyển động';toggle.setAttribute('aria-pressed',String(!paused));cancelAnimationFrame(raf);raf=0;pose(elapsed*.001);parallax();draw();if(paused)document.querySelectorAll('.reveal-pending').forEach(n=>n.classList.remove('reveal-pending'));start()}
  toggle.onclick=()=>{paused=!paused;try{localStorage.setItem('trippin-motion',paused?'off':'on')}catch{}state()};
  reduce.addEventListener('change',()=>{paused=reduce.matches;state()});
  window.addEventListener('pointermove',e=>{if(coarse.matches||paused)return;aim.x=(e.clientX/w-.5)*2;aim.y=(e.clientY/h-.5)*2},{passive:true});
