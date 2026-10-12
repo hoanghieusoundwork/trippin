@@ -126,8 +126,20 @@
     "portrait": "",
     "portraits": [
       {
-        "image": "assets/trippin-portrait-01.webp",
+        "image": "assets/trippin-portrait-bw-01.webp",
         "alt": "TRIPPIN — biểu diễn trực tiếp"
+      },
+      {
+        "image": "assets/trippin-portrait-bw-02.webp",
+        "alt": "TRIPPIN — chân dung"
+      },
+      {
+        "image": "assets/trippin-portrait-bw-03.webp",
+        "alt": "TRIPPIN — chân dung mắt cá"
+      },
+      {
+        "image": "assets/trippin-portrait-bw-04.webp",
+        "alt": "TRIPPIN — chân dung với hoodie"
       }
     ]
   },
