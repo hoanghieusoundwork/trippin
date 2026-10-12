@@ -130,7 +130,7 @@
         "alt": "TRIPPIN — biểu diễn trực tiếp"
       },
       {
-        "image": "assets/trippin-portrait-bw-02.webp",
+        "image": "assets/trippin-portrait-bw-02-retouched.webp",
         "alt": "TRIPPIN — chân dung"
       },
       {
@@ -181,7 +181,10 @@
     "gameDemoCredits": "Hình ảnh: gameplay GOSU và Cruelty Squad. Nhạc nền trong hai demo GOSU được thử nghiệm bằng AI (Suno, Udio); phần tôi thực hiện tập trung vào thiết kế và triển khai các hiệu ứng âm thanh.",
     "filmIntro": "Thiết kế và xử lý âm thanh cho phim ngắn thiếu nhi, chú trọng các hiệu ứng vui nhộn, gần gũi và gợi trí tưởng tượng. Kết hợp layering và mixing để xây dựng thế giới âm thanh sinh động, giúp câu chuyện hấp dẫn hơn và truyền tải nội dung giáo dục một cách tự nhiên.",
     "filmHeadingLead": "Children’s",
-    "filmHeadingTail": "short films"
+    "filmHeadingTail": "short films",
+    "contactFullName": "Trần Ngọc Hoàng Hiếu",
+    "contactBirthday": "15 - 11 - 2000",
+    "contactHometown": "Thành phố Huế"
   },
   "links": {
     "film": "https://drive.google.com/drive/folders/1BlEB8eQQq0SvtVntEYGFrJdyqHHUBS0G?usp=sharing",
