@@ -123,7 +123,13 @@
     "heroImage": "",
     "heroAlt": "",
     "heroCaption": "",
-    "portrait": ""
+    "portrait": "",
+    "portraits": [
+      {
+        "image": "assets/trippin-portrait-01.webp",
+        "alt": "TRIPPIN — biểu diễn trực tiếp"
+      }
+    ]
   },
   "contact": {
     "email": "trippin.sb@gmail.com",
