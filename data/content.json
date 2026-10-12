@@ -160,7 +160,10 @@
     "gameDemoDetail1": "Các demo này chưa phải là bản mix cuối. Đây là những ví dụ về cách tôi tiếp cận và triển khai sound design cho một dự án game, từ lựa chọn chất liệu đến sắp xếp các lớp âm thanh và đồng bộ chúng với hình ảnh, chuyển động.",
     "gameDemoDetail2": "Tôi tập trung vào nhịp điệu của từng hành động, không gian của bối cảnh và sự kết nối giữa các chi tiết, để âm thanh góp phần làm rõ diễn biến và xây dựng bầu không khí của game.",
     "gameDemoDetail3": "Khi bước vào dự án thực tế, tôi sẵn sàng phát triển và hoàn thiện phần âm thanh theo yêu cầu cụ thể, hướng đến tiêu chuẩn chuyên nghiệp cao nhất có thể.",
-    "gameDemoCredits": "Hình ảnh: gameplay GOSU và Cruelty Squad. Nhạc nền trong hai demo GOSU được thử nghiệm bằng AI (Suno, Udio); phần tôi thực hiện tập trung vào thiết kế và triển khai các hiệu ứng âm thanh."
+    "gameDemoCredits": "Hình ảnh: gameplay GOSU và Cruelty Squad. Nhạc nền trong hai demo GOSU được thử nghiệm bằng AI (Suno, Udio); phần tôi thực hiện tập trung vào thiết kế và triển khai các hiệu ứng âm thanh.",
+    "filmIntro": "Thiết kế và xử lý âm thanh cho phim ngắn thiếu nhi, chú trọng các hiệu ứng vui nhộn, gần gũi và gợi trí tưởng tượng. Kết hợp layering và mixing để xây dựng thế giới âm thanh sinh động, giúp câu chuyện hấp dẫn hơn và truyền tải nội dung giáo dục một cách tự nhiên.",
+    "filmHeadingLead": "Children’s",
+    "filmHeadingTail": "short films"
   },
   "links": {
     "film": "https://drive.google.com/drive/folders/1BlEB8eQQq0SvtVntEYGFrJdyqHHUBS0G?usp=sharing",
@@ -178,6 +181,20 @@
       "description": "",
       "video": "assets/about-2-stream.mp4",
       "poster": "assets/about-2-square.jpg"
+    }
+  ],
+  "filmDemos": [
+    {
+      "title": "Short Film — Demo 01",
+      "video": "assets/children-film-1.mp4",
+      "poster": "assets/children-film-1.jpg",
+      "description": ""
+    },
+    {
+      "title": "Short Film — Demo 02",
+      "video": "assets/children-film-2.mp4",
+      "poster": "assets/children-film-2.jpg",
+      "description": ""
     }
   ]
 }

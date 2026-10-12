@@ -38,8 +38,12 @@ if(demos.length&&copy.gameDemoRole){
  note.append(detail);$('#gameDemos').after(note);
 }
 
+const films=data.filmDemos||[];
+$('#film-audio').hidden=films.length===0;
+films.forEach(d=>{const card=el('article','film-demo');videoMedia(card,d);if(d.title)card.append(el('h3','',d.title));if(d.description)card.append(el('p','',d.description));$('#filmDemos').append(card)});
+
 // Warm the video buffer shortly before the viewer reaches a media section.
-const aboutMedia=[...document.querySelectorAll('#aboutVideos video, #gameDemos video')];
+const aboutMedia=[...document.querySelectorAll('#aboutVideos video, #gameDemos video, #filmDemos video')];
 if('IntersectionObserver' in window){
  const warm=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;const video=entry.target;video.preload=navigator.connection?.saveData?'metadata':'auto';warm.unobserve(video)}},{rootMargin:'600px 0px'});
  aboutMedia.forEach(video=>warm.observe(video));
